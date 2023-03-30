@@ -4,13 +4,14 @@ const amqp = require('amqplib');
 async function sendMessage() {
   try {
     // setup
-    const connection = await amqp.connect('amqp://localhost:3000');
+    const connection = await amqp.connect('amqp://guest:guest@rabbitmq:5672');
     const channel = await connection.createChannel();
     const queue = "orders";
     await channel.assertQueue(queue, { durable: false });
     console.log("Server A connected to Rabbit");
     // send message
-    channel.sendToQueue(queue, Buffer.from("This is a message from Server A."));
+    channel.sendToQueue(queue, Buffer.from(
+      "THIS IS A MESSAGE FROM SERVER A. IF YOU SEE THIS. DEMO WORKS"));
     console.log("Server A sent message to Rabbit");
 
   } catch (error) {

@@ -4,14 +4,32 @@ services:
     image: rabbitmq:3.11-management-alpine
     container_name: 'rabbitmq'
     ports:
-        - 3000:5672
+        - 5673:5672
         - 3001:15672
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-        - rabbitmq_nodejs
+        - app-network
+
+  server_b:
+    build:
+      context: ./server_b
+    networks:
+      - app-network
+    depends_on:
+      - "rabbitmq"
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_b.js'
+
+  server_a:
+    build:
+      context: ./server_a
+    networks:
+      - app-network
+    depends_on:
+      - "server_b"
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_a.js'
 
 networks:
-  rabbitmq_nodejs:
+  app-network:
     driver: bridge
