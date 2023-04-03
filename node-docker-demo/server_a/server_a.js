@@ -1,26 +1,36 @@
-const amqp = require('amqplib');
+const amqp = require("amqplib");
+const express = require("express");
+const http = require("http");
 
+// rabbitmq configs
+const QUEUENAME = "orders";
+const rabbitPORT = 5672;
+let rabbitChannel;
+// Nodejs server configs
+const app = express();
+const nodejsPORT = 3000;
 
-async function sendMessage() {
+// starts rabbitmq connection
+async function startRabbit() {
   try {
-    // setup
-    const connection = await amqp.connect('amqp://guest:guest@rabbitmq:5672');
-    const channel = await connection.createChannel();
-    const queue = "orders";
-    await channel.assertQueue(queue, { durable: false });
+    const rabbitURL = "amqp://guest:guest@rabbitmq:" + rabbitPORT.toString();
+    const rabbitConnection = await amqp.connect(rabbitURL);
+    rabbitChannel = await rabbitConnection.createChannel();
+    // creates queue in RabbitMQ if queue with this name didn't exist yet
+    await rabbitChannel.assertQueue(QUEUENAME, { durable: false });
     console.log("Server A connected to Rabbit");
-    // send message
-    channel.sendToQueue(queue, Buffer.from(
-      "THIS IS A MESSAGE FROM SERVER A. IF YOU SEE THIS. DEMO WORKS"));
-    console.log("Server A sent message to Rabbit");
-
   } catch (error) {
     console.error("Server A got error when trying to setup Rabbit: ", error);
     process.exit(1);
   }
-};
+}
 
-// Waiting 5 secs when starting and then sending the message.
-setTimeout(() => {
-  sendMessage();
-}, 5000);
+// listen for requests from frontend
+app.get("/something", (req, res) => {
+  const message = "Hello from Server A";
+  rabbitChannel.sendToQueue(QUEUENAME, Buffer.from(message));
+});
+
+// Start the App
+startRabbit();
+http.createServer(app).listen(nodejsPORT);

@@ -4,8 +4,7 @@ services:
     image: rabbitmq:3.11-management-alpine
     container_name: 'rabbitmq'
     ports:
-        - 5673:5672
-        - 3001:15672
+        - 15672:15672
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
@@ -24,6 +23,8 @@ services:
   server_a:
     build:
       context: ./server_a
+    ports:
+      - 3000:3000
     networks:
       - app-network
     depends_on:
