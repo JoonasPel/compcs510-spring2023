@@ -8,7 +8,7 @@ var bread = {
   }
 
 function sendOrder(){
-    fetch('localhost:3001', {
+    fetch('http://localhost:3001', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(bread)
