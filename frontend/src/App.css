@@ -24,8 +24,43 @@
   color: white;
 }
 
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .App-link {
   color: #61dafb;
+}
+
+.pill-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  border-radius: 999px;
+  background-color: #33ff00;
+  color: white;
+  border: black;
+  font-size: 1rem;
+  margin: 0.5rem;
+  cursor: pointer;
+}
+
+.button-text {
+  margin: 0 1rem;
+}
+
+.button-divider {
+  margin: 0;
+  border: none;
+  border-left: 1px solid white;
+  height: 1.5rem;
+}
+
+.content {
+  margin-top: auto;
 }
 
 @keyframes App-logo-spin {
