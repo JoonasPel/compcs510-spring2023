@@ -13,7 +13,8 @@ services:
 
   server_b:
     build:
-      context: ./server_b
+      context: ./backend/server_b
+    container_name: 'server_b'
     networks:
       - app-network
     depends_on:
@@ -22,14 +23,26 @@ services:
 
   server_a:
     build:
-      context: ./server_a
+      context: ./backend/server_a
+    container_name: 'server_a'
     ports:
-      - 3000:3000
+      - 3001:8080
     networks:
       - app-network
     depends_on:
       - "server_b"
     command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_a.js'
+
+  frontend:
+    build: ./frontend
+    container_name: 'frontend_container'
+    ports:
+      - '3000:3000'
+    depends_on:
+      - "server_a"
+    # Set true to run container in interactive mode (opposite of detached, the container wont shut down on its own)
+    stdin_open: true
+    tty: true
 
 networks:
   app-network:

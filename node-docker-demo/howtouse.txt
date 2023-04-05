@@ -1,9 +1,0 @@
-1. cmd to folder node-docker-demo
-2. type "docker compose up --build"
-3. wait
-4. when you see the message: "!!!!!!! I AM SERVER B WAITING FOR MESSAGES !!!!!!!!!!!"
-everything is running and ready.
-5. in your own browser go to "localhost:3000/something" (literally "something")
-6. Server A receives this request (it exposes port 3000 to outside of container) and
-then it sends a message through rabbit to server B. In cmd you can see:
-"Received message in server B:  Hello from Server A"

@@ -8,7 +8,7 @@ const rabbitPORT = 5672;
 let rabbitChannel;
 // Nodejs server configs
 const app = express();
-const nodejsPORT = 3000;
+const nodejsPORT = 8080;
 
 // starts rabbitmq connection
 async function startRabbit() {
@@ -25,8 +25,8 @@ async function startRabbit() {
   }
 }
 
-// listen for requests from frontend
-app.get("/something", (req, res) => {
+// listen for POST requests from frontend
+app.post("/", (req, res) => {
   const message = "Hello from Server A";
   rabbitChannel.sendToQueue(QUEUENAME, Buffer.from(message));
 });
