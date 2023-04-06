@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -7,38 +7,44 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 
 
-
 var bread1 = {
-    "id": 1,
     "sandwichId": 1,
     "status": "ordered"
 }
 
 var bread2 = {
-    "id": 2,
     "sandwichId": 2,
     "status": "ordered"
 }
 
 var bread3 = {
-    "id": 3,
     "sandwichId": 3,
     "status": "ordered"
 }
 
 
-function sendOrder(str) {
-    console.log(str);
-    fetch('http://localhost:3001', {
-        method: 'POST',
-        mode: 'cors',
-        body: JSON.stringify(str)
-    })
-}
-
-
-
 function MakeOrder() {
+    const [sandWichID, setSandWichID] = useState(1);
+
+
+    function sendOrder(str) {
+        setSandWichID(sandWichID + 1);
+    
+        const newObject ={
+            id: sandWichID,
+            ...str
+        };
+
+        console.log(newObject);
+
+        fetch('http://localhost:3001', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify(newObject)
+        })
+    }
+
+
     return (
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <ListItem alignItems="flex-start"
