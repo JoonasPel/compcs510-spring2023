@@ -29,7 +29,7 @@ var bread3 = {
 
 function sendOrder(str) {
     console.log(str);
-    fetch('localhost:3001', {
+    fetch('http://localhost:3001', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(str)
