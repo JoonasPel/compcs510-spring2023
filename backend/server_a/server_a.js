@@ -10,6 +10,8 @@ let rabbitChannel;
 const app = express();
 const nodejsPORT = 8080;
 
+let orderNumber = 0;
+
 // starts rabbitmq connection
 async function startRabbit() {
   try {
@@ -26,8 +28,15 @@ async function startRabbit() {
 }
 
 // listen for POST requests from frontend
-app.post("/", (req, res) => {
+app.post("/order", (req, res) => {
+  console.log("received message AAAAAAAAA");
   const message = "Hello from Server A";
+  orderNumber++;
+  res.status(200).json({
+    "id": orderNumber,
+    "sandwichId": 0,
+    "status": "preparing",
+  });
   rabbitChannel.sendToQueue(QUEUENAME, Buffer.from(message));
 });
 
