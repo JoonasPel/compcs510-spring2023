@@ -58,7 +58,7 @@ function MakeOrder() {
                 </ListItemAvatar>
                 <ListItemText
                     primary="Italian B.M.T"
-                    secondary={'Ihana, täyteläinen ja runsas Italian B.M.T.® on nautinto jo ajatuksena. Salamia, pepperonia, kinkkua sekä valitsemasi kasvikset ja lisukkeet. Takuuvarma nälän sammuttaja!'}
+                    secondary={'Ihana, täyteläinen ja maistuva Italian B.M.T.® on nautinto jo ajatuksena. Salamia, pepperonia, kinkkua sekä valitsemasi kasvikset ja lisukkeet. Takuuvarma nälän sammuttaja!'}
                 />
             </ListItem>
 
