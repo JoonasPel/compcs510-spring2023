@@ -24,25 +24,37 @@ var bread3 = {
 
 
 function MakeOrder() {
-    const [sandWichID, setSandWichID] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
 
-    function sendOrder(str) {
-        setSandWichID(sandWichID + 1);
-    
-        const newObject ={
-            id: sandWichID,
-            ...str
-        };
+    const sendOrder = async (str) => {
+        try {
+            setLoading(true);
+            setError(null);
+            setSuccess(false);
+            const response = await fetch('http://localhost:3001/order', {
+                method: 'POST',
+                mode: 'cors',
+                body: JSON.stringify(str)
+            });
+            setLoading(false);
+            if (response.ok) {
+                setSuccess(true);
+                console.log('Success! Response:', response);
+            } else {
+                setError('Failed to send order.');
+                console.error('Error:', response);
+            }
+        } catch (error) {
+            setLoading(false);
+            setError('Failed to send order.');
+            console.error('Error:', error);
+        }
+    };
 
-        console.log(newObject);
 
-        fetch('http://localhost:3001', {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify(newObject)
-        })
-    }
 
 
     return (
