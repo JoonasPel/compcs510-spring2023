@@ -37,7 +37,10 @@ function MakeOrder() {
             const response = await fetch('http://localhost:3001/order', {
                 method: 'POST',
                 mode: 'cors',
-                body: JSON.stringify(str)
+                body: JSON.stringify(str),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             });
             setLoading(false);
             if (response.ok) {

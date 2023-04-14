@@ -9,7 +9,7 @@ amqp.connect('amqp://guest:guest@rabbitmq:5672', function(error0, connection) {
             throw error1;
         }
 
-        const queue = "orders";
+        const queue = "orderQueue";
         channel.assertQueue(queue, { durable: false });
 
         console.log("!!!!!!! I AM SERVER B WAITING FOR MESSAGES !!!!!!!!!!!");
