@@ -7,6 +7,7 @@ const config = require("./configs")
 
 
 let rabbitChannel;
+let rabbitConnection;
 // Nodejs server configs
 const app = express();
 app.use(cors({
@@ -21,7 +22,7 @@ let orderNumber = 0;
 async function startRabbit() {
   try {
     const rabbitURL = "amqp://guest:guest@rabbitmq:" + config.rabbitPORT.toString();
-    const rabbitConnection = await amqp.connect(rabbitURL);
+    rabbitConnection = await amqp.connect(rabbitURL);
     rabbitChannel = await rabbitConnection.createChannel();
     // creates queue in RabbitMQ if queue with this name didn't exist yet
     await rabbitChannel.assertQueue(config.ORDER_QUEUE, { durable: false });
@@ -40,4 +41,16 @@ app.post("/order", (req, res) => {
 
 // Start the App
 startRabbit();
-http.createServer(app).listen(config.nodejsPORT);
+const server = http.createServer(app).listen(config.nodejsPORT);
+
+// catch ctrl + c or container closing
+process.on("SIGINT", () => closeGracefully());
+process.on("SIGTERM", () => closeGracefully());
+// close rabbit connection and server_a gracefully
+function closeGracefully() {
+  rabbitChannel.close();
+  rabbitConnection.close();
+  server.close(() => {
+    process.exit(0);
+  });
+};
