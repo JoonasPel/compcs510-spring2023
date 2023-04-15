@@ -33,10 +33,13 @@ async function startRabbit() {
   }
 }
 
-// listen for requests from frontend
+// listen for order requests from frontend
 app.post("/order", (req, res) => {
-  orderNumber++;
-  order.handleOrderRequest(req, res, rabbitChannel, orderNumber);
+    orderNumber++;
+    order.handleAddOrderRequest(req, res, rabbitChannel, orderNumber);
+});
+app.get("/order/:orderId", (req, res) => {
+  order.handleOrderStatusRequest(req, res, req.params.orderId);
 });
 
 // Start the App
