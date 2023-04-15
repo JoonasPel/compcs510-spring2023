@@ -40,8 +40,14 @@ function handleOrderStatusRequest(req, res, orderId) {
         res.send();
     }
 };
+// handle returning all existing orders
+function handleGetAllOrdersRequest(req, res) {
+    const allOrders = Array.from(orders.values());
+    res.status(200).json(allOrders);
+};
 
 module.exports = {
     handleAddOrderRequest,
     handleOrderStatusRequest,
+    handleGetAllOrdersRequest,
 };
