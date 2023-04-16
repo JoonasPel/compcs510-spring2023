@@ -26,12 +26,29 @@ services:
       context: ./backend/server_a
     container_name: 'server_a'
     ports:
-      - 3001:8080
+      - 3001:8079
     networks:
       - app-network
     depends_on:
       - "server_b"
     command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_a.js'
+
+  db:
+    image: postgres:15
+    container_name: 'db'
+    restart: always
+    environment:
+      POSTGRES_USER: unknown
+      POSTGRES_PASSWORD: h8737f5242fsdocf32mof
+      POSTGRES_DB: MAKEMESANDWICH_DB
+    networks:
+      - app-network
+  adminer:
+    image: adminer:4.8.1
+    container_name: 'adminer'
+    restart: always
+    ports:
+      - 8080:8080
 
   frontend:
     build: ./frontend
