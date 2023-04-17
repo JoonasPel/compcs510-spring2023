@@ -4,6 +4,7 @@ const http = require("http");
 const cors = require("cors");
 const order = require("./routes/order");
 const config = require("./configs")
+const db = require("./db");
 
 
 let rabbitChannel;
@@ -46,8 +47,13 @@ app.get("/order/:orderId", (req, res) => {
 });
 
 // Start the App
-startRabbit();
-const server = http.createServer(app).listen(config.nodejsPORT);
+const promise1 = startRabbit();
+const promise2 = db.createTables();
+let server;
+Promise.all([promise1, promise2]).then(() => {
+  server = http.createServer(app).listen(config.nodejsPORT);
+});
+
 
 // catch ctrl + c or container closing
 process.on("SIGINT", () => closeGracefully());
