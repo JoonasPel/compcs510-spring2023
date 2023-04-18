@@ -1,8 +1,6 @@
 const config = require("../configs");
 const db = require("../db");
 
-// save orders. TODO: SQL DB THIS
-const orders = new Map();
 
 // handle adding order
 function handleAddOrderRequest(req, res, rabbitChannel, orderNumber) {
@@ -19,7 +17,6 @@ function handleAddOrderRequest(req, res, rabbitChannel, orderNumber) {
       "sandwichId": sandwichId,
       "status": "inQueue",
     };
-    orders.set(order.id, order);
     db.addOrder(order)
       .then(result => {
         if (result) {
@@ -32,6 +29,7 @@ function handleAddOrderRequest(req, res, rabbitChannel, orderNumber) {
       });
     }
 };
+
 // handle checking existing order status
 function handleOrderStatusRequest(req, res, orderId) {
   const id = Number(orderId);
@@ -40,19 +38,24 @@ function handleOrderStatusRequest(req, res, orderId) {
     res.status(400);
     res.send();
   }
-  const order = orders.get(id);
-  if (order) {
-    res.status(200).json(order);
-  // order not found
-  } else {
-    res.status(404);
-    res.send();
-  }
+  db.getOrder(orderId)
+    .then(order => {
+      const isEmptyObject = Object.keys(order).length === 0;
+      if (!isEmptyObject) {
+        res.status(200).json(order);
+      // order not found
+      } else {
+        res.status(404);
+        res.send();
+      } 
+  });
 };
+
 // handle returning all existing orders
+// CURRENTLY NOT WORKING. NEED USER IMPLEMENTATION FIRST.
 function handleGetAllOrdersRequest(req, res) {
-  const allOrders = Array.from(orders.values());
-  res.status(200).json(allOrders);
+  res.status(500);
+  res.send();
 };
 
 module.exports = {

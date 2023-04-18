@@ -7,8 +7,7 @@ const config = require("./configs")
 const db = require("./db");
 
 
-let rabbitChannel;
-let rabbitConnection;
+let rabbitChannel, rabbitConnection;
 // Nodejs server configs
 const app = express();
 app.use(cors({

@@ -20,38 +20,56 @@ async function createTables() {
     const ordersTableQuery = "CREATE TABLE IF NOT EXISTS orders " +
         "(id SERIAL PRIMARY KEY, sandwichId INTEGER, status VARCHAR(20) "+
         "CHECK (status IN ('ordered', 'received', 'inQueue', 'ready', 'failed')))";
-    const isSuccess = await execute(ordersTableQuery);
-    return isSuccess;
+    const result = await execute(ordersTableQuery);
+    return typeof result === "object";
 };
 
 /**
  * Adds order to Postgres database
  * @param {Object} order containing id, sandwich id, status 
- * @returns true if succesful, false otherwise(e.g. id already exists)
+ * @returns true if succesful, false otherwise
  */
 async function addOrder(order) {
     if (order.hasOwnProperty("sandwichId") && order.hasOwnProperty("status")) {
         const insertOrderQuery = "INSERT INTO orders (sandwichId, status) VALUES ($1, $2)";
         const values = [order.sandwichId, order.status];
-        const isSuccess = await execute(insertOrderQuery, values);
-        return isSuccess;
+        const result = await execute(insertOrderQuery, values);
+        return typeof result === "object";
     }
     return false;
 };
 
-// returns true if succesful, false otherwise
+/**
+ * Gets order from DB with id
+ * @param {int64} orderId 
+ * @returns {Object} order if found. Otherwise empty object.
+ */
+async function getOrder(orderId) {
+  const getOrderQuery = "SELECT * FROM orders WHERE id = $1";
+  const result = await execute(getOrderQuery, [orderId]);
+  if (
+    typeof result === "object" &&
+    Array.isArray(result.rows) &&
+    result.rows.length === 1
+  ) {
+    return result.rows[0];
+  }
+  return {};
+} 
+
+// returns false if not successful, result otherwise
 // connection pool used for better performance.
 async function execute(query, values=false) {
-    let client;
+    let client, result;
     try {
-        client = await pool.connect();
+        client = await pool.connect();   
         if (values) {
-            await client.query(query, values);
+            result = await client.query(query, values);
         } else {
-            await client.query(query);
+            result = await client.query(query);
         }
         client.release();
-        return true;
+        return result;
     } catch (error) {
         console.error(error.stack);
         if (client) {
@@ -62,6 +80,7 @@ async function execute(query, values=false) {
 };
 
 module.exports = {
-    addOrder,
     createTables,
+    addOrder,
+    getOrder,
 };
