@@ -15,8 +15,6 @@ app.use(cors({
   methods: ["GET", "POST"],
 }));
 app.use(express.json());
-// Gives every order an unique id by incrementing this.
-let orderNumber = 0;
 
 // starts rabbitmq connection
 async function startRabbit() {
@@ -35,8 +33,7 @@ async function startRabbit() {
 
 // listen for order requests from frontend
 app.post("/order", (req, res) => {
-  orderNumber++;
-  order.handleAddOrderRequest(req, res, rabbitChannel, orderNumber);
+  order.handleAddOrderRequest(req, res, rabbitChannel);
 });
 app.get("/order", (req, res) => {
   order.handleGetAllOrdersRequest(req, res);

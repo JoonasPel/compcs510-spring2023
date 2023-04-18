@@ -3,25 +3,24 @@ const db = require("../db");
 
 
 // handle adding order
-function handleAddOrderRequest(req, res, rabbitChannel, orderNumber) {
-  const orderId = Number(orderNumber);  // just in case
+function handleAddOrderRequest(req, res, rabbitChannel) {
   const sandwichId = Number(req.body.sandwichId);
   // check that sandwichId is a number. TODO: also check that this exact
   // sandwichId exists in available sandwiches in some database.
-  if (isNaN(sandwichId) || isNaN(orderId)) {
+  if (isNaN(sandwichId)) {
     res.status(400);
     res.send();
   } else {
     const order = {
-      "id": orderId,
       "sandwichId": sandwichId,
       "status": "inQueue",
     };
     db.addOrder(order)
       .then(result => {
-        if (result) {
-          rabbitChannel.sendToQueue(config.ORDER_QUEUE, Buffer.from(JSON.stringify(order)));
-          res.status(200).json(order);
+        const isEmptyObject = Object.keys(result).length === 0;
+        if (!isEmptyObject) {
+          rabbitChannel.sendToQueue(config.ORDER_QUEUE, Buffer.from(JSON.stringify(result)));
+          res.status(200).json(result);
         } else {
           res.status(500);
           res.send();

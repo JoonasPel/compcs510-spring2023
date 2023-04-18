@@ -26,17 +26,21 @@ async function createTables() {
 
 /**
  * Adds order to Postgres database
- * @param {Object} order containing id, sandwich id, status 
- * @returns true if succesful, false otherwise
+ * @param {Object} order containing sandwich id, status
+ * @returns {Object} created order if succesful. Otherwise empty object.
  */
 async function addOrder(order) {
     if (order.hasOwnProperty("sandwichId") && order.hasOwnProperty("status")) {
-        const insertOrderQuery = "INSERT INTO orders (sandwichId, status) VALUES ($1, $2)";
+        const insertOrderQuery = "INSERT INTO orders (sandwichId, status) VALUES ($1, $2) " +
+          "RETURNING id";
         const values = [order.sandwichId, order.status];
         const result = await execute(insertOrderQuery, values);
-        return typeof result === "object";
+        if (typeof result === "object") {
+          order.id = result.rows[0].id;
+          return order;
+        }
     }
-    return false;
+    return {};
 };
 
 /**
@@ -55,7 +59,7 @@ async function getOrder(orderId) {
     return result.rows[0];
   }
   return {};
-} 
+};
 
 // returns false if not successful, result otherwise
 // connection pool used for better performance.
