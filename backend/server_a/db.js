@@ -61,6 +61,19 @@ async function getOrder(orderId) {
   return {};
 };
 
+/**
+ * get all orders in database
+ * @returns {Array[Object]} orders, empty array if no orders. false if error.
+ */
+async function getAllOrders() {
+  const getOrderQuery = "SELECT * FROM orders";
+  const result = await execute(getOrderQuery);
+  if (typeof result === "object" && Array.isArray(result.rows)) {
+    return result.rows;
+  }
+  return false;
+};
+
 // returns false if not successful, result otherwise
 // connection pool used for better performance.
 async function execute(query, values=false) {
@@ -87,4 +100,5 @@ module.exports = {
     createTables,
     addOrder,
     getOrder,
+    getAllOrders,
 };

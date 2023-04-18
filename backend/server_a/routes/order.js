@@ -42,7 +42,6 @@ function handleOrderStatusRequest(req, res, orderId) {
       const isEmptyObject = Object.keys(order).length === 0;
       if (!isEmptyObject) {
         res.status(200).json(order);
-      // order not found
       } else {
         res.status(404);
         res.send();
@@ -51,10 +50,17 @@ function handleOrderStatusRequest(req, res, orderId) {
 };
 
 // handle returning all existing orders
-// CURRENTLY NOT WORKING. NEED USER IMPLEMENTATION FIRST.
 function handleGetAllOrdersRequest(req, res) {
-  res.status(500);
-  res.send();
+  db.getAllOrders()
+    .then(orders => {
+      // empty array [] is truthy so gives 200 also.
+      if (orders) {
+        res.status(200).json(orders);
+      } else {
+        res.status(500);
+        res.send();
+      }
+    });
 };
 
 module.exports = {
