@@ -73,11 +73,27 @@ async function addOrder(order) {
     return {};
 };
 
+async function modifyOrder(orderWithNewValues) {
+  if (orderWithNewValues.hasOwnProperty("id") && orderWithNewValues.hasOwnProperty("status")) {
+    const id = orderWithNewValues.id;
+    const newStatus = orderWithNewValues.status;
+    const modifyOrderQuery = "UPDATE orders SET status = $1 WHERE id = $2";
+    const values = [newStatus, id];
+    const result = await execute(modifyOrderQuery, values);
+    return typeof result === "object";
+  }
+  return false;
+};
+
 async function addUser(user) {
   const insertUserQuery = "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)";
   const values = [user.username, user.email, user.password];
   const result = await execute(insertUserQuery, values);
   return typeof result === "object";
+};
+
+async function checkUserCredentials(user) {
+  console.log("TODO TODO TODO");
 };
 
 /**
@@ -136,6 +152,7 @@ async function execute(query, values=false) {
 module.exports = {
     createTables,
     addOrder,
+    modifyOrder,
     getOrder,
     getAllOrders,
     getSandwiches,
