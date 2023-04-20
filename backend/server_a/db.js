@@ -21,6 +21,11 @@ async function createTables() {
         "CHECK (status IN ('ordered', 'received', 'inQueue', 'ready', 'failed')))";
     const result = await execute(ordersTableQuery);
 
+    // table for users
+    const usersTableQuery = "CREATE TABLE IF NOT EXISTS users " +
+      "(id SERIAL PRIMARY KEY, username VARCHAR(100), email VARCHAR(100), password VARCHAR(100))";
+    const resultUsers = await execute(usersTableQuery);
+
     // create sandwich table
     const sandwichQuery = "CREATE TABLE IF NOT EXISTS sandwiches ( id INTEGER PRIMARY KEY, name TEXT, bread_type TEXT )";
     const toppingsQuery = "CREATE TABLE IF NOT EXISTS sandwich_toppings ( id INTEGER PRIMARY KEY, name TEXT, sandwich_id INTEGER, FOREIGN KEY (sandwich_id) REFERENCES sandwiches(id))";
@@ -35,8 +40,6 @@ async function createTables() {
 };
 
 async function getSandwiches() {
-  const sandwiches = [];
-
   const query = `
   SELECT
   s.id AS sandwich_id,
@@ -68,6 +71,13 @@ async function addOrder(order) {
         }
     }
     return {};
+};
+
+async function addUser(user) {
+  const insertUserQuery = "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)";
+  const values = [user.username, user.email, user.password];
+  const result = await execute(insertUserQuery, values);
+  return typeof result === "object";
 };
 
 /**
@@ -128,5 +138,6 @@ module.exports = {
     addOrder,
     getOrder,
     getAllOrders,
-    getSandwiches
+    getSandwiches,
+    addUser,
 };
