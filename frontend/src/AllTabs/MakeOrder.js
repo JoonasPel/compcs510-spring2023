@@ -38,9 +38,7 @@ function MakeOrder() {
                 method: 'POST',
                 mode: 'cors',
                 body: JSON.stringify(str),
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+                headers: {'Content-Type': 'application/json'}
             });
             setLoading(false);
             if (response.ok) {
