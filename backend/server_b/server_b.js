@@ -1,24 +1,36 @@
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib');
+const receiveTask = require('./rabbit-utils/receiveTask');
+const sendTask = require('./rabbit-utils/sendTask');
 
-amqp.connect('amqp://guest:guest@rabbitmq:5672', function(error0, connection) {
-    if (error0) {
-        throw error0;
-    }
-    connection.createChannel(function(error1, channel) {
-        if (error1) {
-            throw error1;
-        }
+// Rabbit
+const OrderQueue = "orderQueue";
+const StatusQueue = "statusQueue";
+const rabbitHost = 'guest:guest@rabbitmq:5672';
 
-        const queue = "orderQueue";
-        channel.assertQueue(queue, { durable: false });
+async function main() {
+    // connect to RabbitMQ server
+    const connection = await amqp.connect('amqp://'+ rabbitHost);
+    const channel = await connection.createChannel();
+    console.log('handler connected to rabbit');
+    // declare input and output queues
+    await channel.assertQueue(OrderQueue, { durable: false });
+    await channel.assertQueue(StatusQueue, { durable: false });
 
-        console.log("!!!!!!! I AM SERVER B WAITING FOR MESSAGES !!!!!!!!!!!");
-        channel.consume(queue, function(msg) {
-            console.log("Received message in server B: ", msg.content.toString());
-        }, {
-            // this means that consumer WILL NOT send confirmation to rabbit
-            // about receiving the msg. probably not good to use
-            noAck: true
-        });
-    });
-});
+    // Consume messages from order queue and publish to status queue
+    channel.consume(OrderQueue, function (msg) {
+        const message = msg.content.toString();
+        console.log(`Received message: ${message}`);
+
+        // Parses json and sends to statusQueue after 7 secs
+        setTimeout(() => {
+            var obj = JSON.parse(message);
+            obj.status = 'ready';
+            console.log('Status set to ready');
+            var msgToStatusQueue = JSON.stringify(obj);
+            channel.sendToQueue(StatusQueue, Buffer.from(msgToStatusQueue));
+            console.log('Sent message: ' + msgToStatusQueue);
+        }, 7000);
+    }, { noAck: true });
+}
+
+main().catch(console.error);
