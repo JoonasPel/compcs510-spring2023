@@ -40,47 +40,63 @@ function MakeOrder() {
 
   useEffect(() => {
     const fetchSandwiches = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch('http://localhost:3001/sandwich');
-        setLoading(false);
-        if (response.ok) {
-          const data = await response.json();
-          setSandwiches(data);
-          console.log(data);
-        } else {
+        try {
+          setLoading(true);
+          setError(null);
+          const response = await fetch('http://localhost:3001/sandwich');
+          setLoading(false);
+          if (response.ok) {
+            const data = await response.json();
+            console.log('data:', data); // add this line
+            const formattedData = data.map((sandwich) => {
+              console.log('sandwichIDasdfasdfasfdas:', sandwich); // add this line
+              const toppingsArray = sandwich.toppings.map((topping) => {
+                console.log('topping:', topping); // add this line
+                console.log(topping.name);
+                return topping.name;
+              });
+              return {
+                sandwich_id: sandwich.sandwich_id,
+                sandwich_name: sandwich.sandwich_name,
+                bread_type: sandwich.bread_type,
+                toppings: toppingsArray
+              };
+            });
+            console.log('formattedData:', formattedData); // add this line
+            setSandwiches(formattedData);
+          } else {
+            setError('Failed to fetch sandwiches.');
+            console.error('Error:', response);
+          }
+        } catch (error) {
+          setLoading(false);
           setError('Failed to fetch sandwiches.');
-          console.error('Error:', response);
+          console.error('Error:', error);
         }
-      } catch (error) {
-        setLoading(false);
-        setError('Failed to fetch sandwiches.');
-        console.error('Error:', error);
-      }
-    };
+      };
     fetchSandwiches();
   }, []);
 
-  return (
-    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-      {sandwiches.map((sandwich) => (
-        <React.Fragment key={sandwich.id}>
-          <ListItem
-            alignItems="flex-start"
-            secondaryAction={
-              <button onClick={() => sendOrder({ sandwichId: sandwich.id, status: 'ordered' })}>
-                Tilaa
-              </button>
-            }
-          >
-            <ListItemText primary={sandwich.name} secondary={sandwich.description} />
-          </ListItem>
-          <Divider variant="inset" component="li" />
-        </React.Fragment>
-      ))}
-    </List>
-  );
+    return (
+        <div>
+            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                {sandwiches.map((sandwich) => (
+                    <React.Fragment key={sandwich.sandwich_id}>
+                        <ListItem
+                            alignItems="flex-start"
+                            secondaryAction={<button onClick={() => sendOrder({ sandwichId: sandwich.sandwich_id, status: 'ordered' })}>
+                                Order
+                            </button>}
+                        >
+                            <ListItemText primary={sandwich.sandwich_name}secondary={"Bread Type: " + sandwich.bread_type} />
+                            <ListItemText primary="Toppings:" secondary= {sandwich.toppings.join(', ')}/>
+                        </ListItem>
+                        <Divider variant="inset" component="li" />
+                    </React.Fragment>
+                ))}
+            </List>
+        </div>
+    );
 }
 
 export default MakeOrder;
