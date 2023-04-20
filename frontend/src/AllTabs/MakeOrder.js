@@ -6,7 +6,9 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 
-function MakeOrder() {
+function MakeOrder(props) {
+  const orderedSandwiches = props.orderedSandwiches;
+  const setOrderedSandwiches = props.setOrderedSandwiches;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -26,7 +28,8 @@ function MakeOrder() {
       setLoading(false);
       if (response.ok) {
         setSuccess(true);
-        console.log('Success! Response:', response);
+        const data = await response.json();
+        setOrderedSandwiches([...orderedSandwiches, data.id]);
       } else {
         setError('Failed to send order.');
         console.error('Error:', response);

@@ -1,39 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-function OrderStatus() {
-  const [orderId, setOrderId] = useState('');
-  const [status, setStatus] = useState('');
+function OrderStatus(props) {
+  const orderedSandwiches = props.orderedSandwiches;
+  const [statusArray, setStatusArray] = useState([]);
 
-  const handleOrderIdChange = (event) => {
-    setOrderId(event.target.value);
-  };
+  const getOrderStatus = async (orderedSandwiches) => {
+    const fetchedStatusArray = [];
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const response = await fetch(`http://localhost:3001/order/${orderId}`);
+    for (const id of orderedSandwiches) {
+      const response = await fetch(`http://localhost:3001/order/${id}/`);
       const data = await response.json();
-      console.log(data);
-      setStatus(data.status);
-    } catch (error) {
-      console.error('Error fetching order status:', error);
+      fetchedStatusArray.push({ id, status: data.status });
     }
-  };
+
+    return fetchedStatusArray;
+  }
+
+  const handleRefreshClick = async () => {
+    const fetchedStatusArray = await getOrderStatus(orderedSandwiches);
+    setStatusArray(fetchedStatusArray);
+  }
+
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      const fetchedStatusArray = await getOrderStatus(orderedSandwiches);
+      setStatusArray(fetchedStatusArray);
+    }
+    fetchStatuses();
+  }, [orderedSandwiches]);
 
   return (
     <div>
-      <div>Order Status: {status}</div>
-      <form onSubmit={handleFormSubmit}>
-        <label htmlFor="orderId">Order ID:</label>
-        <input
-          type="text"
-          id="orderId"
-          value={orderId}
-          onChange={handleOrderIdChange}
-        />
-        <button type="submit">Submit</button>
-      </form>
+      <button onClick={handleRefreshClick}>Refresh</button>
+      <ul>
+        {statusArray.map((item) => (
+          <div key={item.id}>Order ID: {item.id}, Order Status: {item.status}</div>
+        ))}
+      </ul>
     </div>
   );
 }

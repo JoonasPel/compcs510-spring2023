@@ -8,6 +8,7 @@ import User from './AllTabs/User';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('API');
+  const [orderedSandwiches, setOrderedSandwiches] = useState('');
 
   const handleNavClick = (page) => {
     setCurrentPage(page);
@@ -25,8 +26,8 @@ function App() {
         </button>
       </nav>
       <div>
-        {currentPage === 'API' && <MakeOrder />}
-        {currentPage === 'OrderStatus' && <OrderStatus />}
+        {currentPage === 'API' && <MakeOrder  orderedSandwiches={orderedSandwiches} setOrderedSandwiches={setOrderedSandwiches} />}
+        {currentPage === 'OrderStatus' && <OrderStatus orderedSandwiches={orderedSandwiches}/>}
         {currentPage === 'User' && <User />}
       </div>
     </div>

@@ -7,7 +7,14 @@ function User() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   const createUser = async () => {
+    if (!username || !password || !email) {
+      setErrorMessage('Please fill in all fields');
+      return;
+    }
+
     const response = await fetch('http://localhost:3001/user', {
       method: 'POST',
       mode: 'cors',
@@ -25,6 +32,10 @@ function User() {
   }
 
   const loginUser = async () => {
+    if (!username || !password) {
+      setErrorMessage('Please enter a username and password');
+      return;
+    }
     const response = await fetch('http://localhost:3001/user/login', {
       method: 'POST',
       mode: 'cors',
@@ -55,7 +66,8 @@ function User() {
   return (
     <div>
       <div>User</div>
-
+      {errorMessage && (
+      <div style={{ color: 'red' }}>{errorMessage}</div>)}
       {logOrCreate === '' && (
         <div>
           <button onClick={() => setLogOrCreate('Login')}>Login</button>
