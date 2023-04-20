@@ -14,6 +14,7 @@ function OrderStatus() {
     try {
       const response = await fetch(`http://localhost:3001/order/${orderId}`);
       const data = await response.json();
+      console.log(data);
       setStatus(data.status);
     } catch (error) {
       console.error('Error fetching order status:', error);
