@@ -14,6 +14,8 @@ function MakeOrder(props) {
   const [success, setSuccess] = useState(false);
   const [sandwiches, setSandwiches] = useState([]);
 
+
+  // Sending sandwich order to server
   const sendOrder = async (str) => {
     try {
       setLoading(true);
@@ -41,6 +43,7 @@ function MakeOrder(props) {
     }
   };
 
+  // Get all possible sandwiches from server
   useEffect(() => {
     const fetchSandwiches = async () => {
         try {
@@ -50,12 +53,9 @@ function MakeOrder(props) {
           setLoading(false);
           if (response.ok) {
             const data = await response.json();
-            console.log('data:', data); // add this line
+
             const formattedData = data.map((sandwich) => {
-              console.log('sandwichIDasdfasdfasfdas:', sandwich); // add this line
               const toppingsArray = sandwich.toppings.map((topping) => {
-                console.log('topping:', topping); // add this line
-                console.log(topping.name);
                 return topping.name;
               });
               return {
@@ -65,7 +65,6 @@ function MakeOrder(props) {
                 toppings: toppingsArray
               };
             });
-            console.log('formattedData:', formattedData); // add this line
             setSandwiches(formattedData);
           } else {
             setError('Failed to fetch sandwiches.');

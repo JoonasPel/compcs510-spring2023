@@ -7,9 +7,12 @@ import User from './AllTabs/User';
 
 
 function App() {
+  // useStates for changing pages
   const [currentPage, setCurrentPage] = useState('API');
+  // useState for orders made by the user
   const [orderedSandwiches, setOrderedSandwiches] = useState('');
 
+  // Navigating between pages
   const handleNavClick = (page) => {
     setCurrentPage(page);
   };

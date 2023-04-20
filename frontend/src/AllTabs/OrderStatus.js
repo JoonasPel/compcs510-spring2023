@@ -4,6 +4,9 @@ function OrderStatus(props) {
   const orderedSandwiches = props.orderedSandwiches;
   const [statusArray, setStatusArray] = useState([]);
 
+
+  // Get statuses for orders made from your tab (Does not get all results just the ones made from your current tab
+  // This means that multiple users should be able to make orders and not get them mixed up)
   const getOrderStatus = async (orderedSandwiches) => {
     const fetchedStatusArray = [];
 
