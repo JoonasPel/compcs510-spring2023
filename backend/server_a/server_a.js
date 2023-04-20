@@ -42,8 +42,10 @@ app.get("/order/:orderId", (req, res) => {
   order.handleOrderStatusRequest(req, res, req.params.orderId);
 });
 app.get("/sandwich", (req, res) => {
-  const sandwiches = db.getSandwiches();
-  res.status(200).json(sandwiches);
+  db.getSandwiches()
+  .then(sandwiches => {
+    res.status(200).json(sandwiches);
+  });
 });
 
 // Start the App
