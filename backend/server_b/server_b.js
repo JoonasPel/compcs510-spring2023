@@ -1,45 +1,36 @@
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib');
+const receiveTask = require('./rabbit-utils/receiveTask');
+const sendTask = require('./rabbit-utils/sendTask');
 
-// rabbitmq configs
-const ORDER_QUEUE = "orderQueue";
-const STATUS_QUEUE = "statusQueue";
-const rabbitPORT = 5672;
-let rabbitChannel;
-// Nodejs server configs
-const app = express();
-const nodejsPORT = 8080;
+// Rabbit
+const OrderQueue = "orderQueue";
+const StatusQueue = "statusQueue";
+const rabbitHost = 'guest:guest@rabbitmq:5672';
 
-async function handleOrder() {
-    amqp.connect('amqp://guest:guest@rabbitmq:5672', (error0, connection) => {
-        if (error0) {
-            throw error0;
-        }
-        connection.createChannel((error1, channel) => {
-            if (error1) {
-                throw error1;
-            }
-    
-            // This makes sure that both of the queues have been created
-            await channel.assertQueue(ORDER_QUEUE, { durable: ture });
-            await channel.assertQueue(STATUS_QUEUE, { durable: true });
-    
-            console.log("Order handler connected");
-    
-            channel.consume(ORDER_QUEUE, msg => {
-                console.log("Received order: ", msg.content.toString());
-                msg.content.parse
-                setTimeout( () => {
-                    const payload = msg.content.toString();
-                    const obj = JSON.parse(payload);
-                    obj.status = 'Ready';
-                    channel.sendToQueue()
-                }, 7000)
-    
-            }, {
-                // this means that consumer WILL NOT send confirmation to rabbit
-                // about receiving the msg. probably not good to use
-                noAck: false
-            });
-        });
-    });    
+async function main() {
+    // connect to RabbitMQ server
+    const connection = await amqp.connect('amqp://'+ rabbitHost);
+    const channel = await connection.createChannel();
+    console.log('handler connected to rabbit');
+    // declare input and output queues
+    await channel.assertQueue(OrderQueue, { durable: false });
+    await channel.assertQueue(StatusQueue, { durable: false });
+
+    // Consume messages from order queue and publish to status queue
+    channel.consume(OrderQueue, function (msg) {
+        const message = msg.content.toString();
+        console.log(`Received message: ${message}`);
+
+        // Parses json and sends to statusQueue after 7 secs
+        setTimeout(() => {
+            var obj = JSON.parse(message);
+            obj.status = 'ready';
+            console.log('Status set to ready');
+            var msgToStatusQueue = JSON.stringify(obj);
+            channel.sendToQueue(StatusQueue, Buffer.from(msgToStatusQueue));
+            console.log('Sent message: ' + msgToStatusQueue);
+        }, 7000);
+    }, { noAck: true });
 }
+
+main().catch(console.error);
