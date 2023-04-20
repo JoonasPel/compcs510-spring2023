@@ -3,6 +3,7 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const order = require("./routes/order");
+const user = require("./routes/user");
 const config = require("./configs")
 const db = require("./db");
 
@@ -31,7 +32,7 @@ async function startRabbit() {
   }
 }
 
-// listen for order requests from frontend
+// listen for order requests
 app.post("/order", (req, res) => {
   order.handleAddOrderRequest(req, res, rabbitChannel);
 });
@@ -41,11 +42,16 @@ app.get("/order", (req, res) => {
 app.get("/order/:orderId", (req, res) => {
   order.handleOrderStatusRequest(req, res, req.params.orderId);
 });
+// listen for sandwich requests
 app.get("/sandwich", (req, res) => {
   db.getSandwiches()
   .then(sandwiches => {
     res.status(200).json(sandwiches);
   });
+});
+// listen for user requests
+app.post("/user", (req, res) => {
+  user.handleUserRegistering(req, res);
 });
 
 // Start the App
