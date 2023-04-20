@@ -36,7 +36,7 @@ function OrderStatus(props) {
     <div>
       <button onClick={handleRefreshClick}>Refresh</button>
       <ul>
-        {statusArray.map((item) => (
+        {statusArray.sort((a, b) => b.id - a.id).map((item) => (
           <div key={item.id}>Order ID: {item.id}, Order Status: {item.status}</div>
         ))}
       </ul>
