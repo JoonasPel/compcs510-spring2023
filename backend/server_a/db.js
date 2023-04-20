@@ -1,5 +1,4 @@
 // this file exports functions that can be used to access postgres database
-// NOT WORKING YET.
 
 const { Pool, Client } = require("pg");
 
@@ -21,7 +20,35 @@ async function createTables() {
         "(id SERIAL PRIMARY KEY, sandwichId INTEGER, status VARCHAR(20) "+
         "CHECK (status IN ('ordered', 'received', 'inQueue', 'ready', 'failed')))";
     const result = await execute(ordersTableQuery);
+
+    // create sandwich table
+    const sandwichQuery = "CREATE TABLE IF NOT EXISTS sandwiches ( id INTEGER PRIMARY KEY, name TEXT, bread_type TEXT )";
+    const toppingsQuery = "CREATE TABLE IF NOT EXISTS sandwich_toppings ( id INTEGER PRIMARY KEY, name TEXT, sandwich_id INTEGER, FOREIGN KEY (sandwich_id) REFERENCES sandwiches(id))";
+    const insertSandwichesQuery = "INSERT INTO sandwiches (id, name, bread_type) VALUES (0, 'Ham_sandwich', 'oat'), (1, 'Turkey_sandwich', 'oat')";
+    const insertToppingsQuery = "INSERT INTO sandwich_toppings (id, name, sandwich_id) VALUES (0, 'Cheese', 0), (1, 'Ham', 0), (2, 'Turkey', 1), (3, 'Cheese', 1)";
+    await execute(sandwichQuery);
+    await execute(toppingsQuery);
+    await execute(insertSandwichesQuery);
+    await execute(insertToppingsQuery);
+
     return typeof result === "object";
+};
+
+async function getSandwiches() {
+  const sandwiches = [];
+
+  const query = `
+  SELECT
+  s.id AS sandwich_id,
+  s.name AS sandwich_name,
+  s.bread_type AS bread_type,
+  json_agg(json_build_object('id', t.id, 'name', t.name)) AS toppings
+  FROM sandwiches s
+  LEFT JOIN sandwich_toppings t ON s.id = t.sandwich_id
+  GROUP BY s.id, s.name, s.bread_type;
+  `;
+  const result = await execute(query);
+  return result.rows;
 };
 
 /**
@@ -101,4 +128,5 @@ module.exports = {
     addOrder,
     getOrder,
     getAllOrders,
+    getSandwiches
 };

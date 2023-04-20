@@ -41,6 +41,10 @@ app.get("/order", (req, res) => {
 app.get("/order/:orderId", (req, res) => {
   order.handleOrderStatusRequest(req, res, req.params.orderId);
 });
+app.get("/sandwich", (req, res) => {
+  const sandwiches = db.getSandwiches();
+  res.status(200).json(sandwiches);
+});
 
 // Start the App
 const promise1 = startRabbit();
