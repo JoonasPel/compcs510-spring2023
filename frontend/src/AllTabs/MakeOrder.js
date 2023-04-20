@@ -24,25 +24,38 @@ var bread3 = {
 
 
 function MakeOrder() {
-    const [sandWichID, setSandWichID] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
 
-    function sendOrder(str) {
-        setSandWichID(sandWichID + 1);
-    
-        const newObject ={
-            id: sandWichID,
-            ...str
-        };
+    const sendOrder = async (str) => {
+        try {
+            setLoading(true);
+            setError(null);
+            setSuccess(false);
+            const response = await fetch('http://localhost:3001/order', {
+                method: 'POST',
+                mode: 'cors',
+                body: JSON.stringify(str),
+                headers: {'Content-Type': 'application/json'}
+            });
+            setLoading(false);
+            if (response.ok) {
+                setSuccess(true);
+                console.log('Success! Response:', response);
+            } else {
+                setError('Failed to send order.');
+                console.error('Error:', response);
+            }
+        } catch (error) {
+            setLoading(false);
+            setError('Failed to send order.');
+            console.error('Error:', error);
+        }
+    };
 
-        console.log(newObject);
 
-        fetch('http://localhost:3001', {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify(newObject)
-        })
-    }
 
 
     return (
@@ -58,7 +71,7 @@ function MakeOrder() {
                 </ListItemAvatar>
                 <ListItemText
                     primary="Italian B.M.T"
-                    secondary={'Ihana, täyteläinen ja runsas Italian B.M.T.® on nautinto jo ajatuksena. Salamia, pepperonia, kinkkua sekä valitsemasi kasvikset ja lisukkeet. Takuuvarma nälän sammuttaja!'}
+                    secondary={'Ihana, täyteläinen ja maistuva Italian B.M.T.® on nautinto jo ajatuksena. Salamia, pepperonia, kinkkua sekä valitsemasi kasvikset ja lisukkeet. Takuuvarma nälän sammuttaja!'}
                 />
             </ListItem>
 
