@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 
 function User() {
+  const [logOrCreate, setLogOrCreate] = useState('');
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const createUser = async () => {
     const response = await fetch('http://localhost:3001/user', {
@@ -13,7 +16,8 @@ function User() {
       },
       body: JSON.stringify({
         username: username,
-        password: password
+        password: password,
+        email: email
       })
     });
     const data = await response.json();
@@ -51,13 +55,32 @@ function User() {
   return (
     <div>
       <div>User</div>
-      <form>
-        <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-        <button type="button" onClick={createUser}>Create User</button>
-        <button type="button" onClick={loginUser}>Login</button>
-        <button type="button" onClick={logoutUser}>Logout</button>
-      </form>
+
+      {logOrCreate === '' && (
+        <div>
+          <button onClick={() => setLogOrCreate('Login')}>Login</button>
+          <button onClick={() => setLogOrCreate('Create')}>Create Account</button>
+        </div>
+      )}
+
+      {logOrCreate === 'Login' && (
+        <form>
+          <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+          <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+          <button type="button" onClick={loginUser}>Login</button>
+          <button onClick={() => setLogOrCreate('')}>Back</button>
+        </form>
+      )}
+
+      {logOrCreate === 'Create' && (
+        <form>
+          <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+          <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+          <button type="button" onClick={createUser}>Create Account</button>
+          <button onClick={() => setLogOrCreate('')}>Back</button>
+        </form>
+      )}
     </div>
   )
 }

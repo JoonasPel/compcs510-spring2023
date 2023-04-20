@@ -48,6 +48,7 @@ function MakeOrder() {
         if (response.ok) {
           const data = await response.json();
           setSandwiches(data);
+          console.log(data);
         } else {
           setError('Failed to fetch sandwiches.');
           console.error('Error:', response);
