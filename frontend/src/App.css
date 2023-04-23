@@ -1,3 +1,9 @@
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .App {
   text-align: center;
 }
@@ -14,7 +20,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #474c57;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -70,4 +76,9 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.background {
+  background-color:#474c57;
+  height: 100vh;
 }

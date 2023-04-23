@@ -15,6 +15,7 @@ async function main() {
     // declare input and output queues
     await channel.assertQueue(OrderQueue, { durable: false });
     await channel.assertQueue(StatusQueue, { durable: false });
+    channel.prefetch(1);
 
     // Consume messages from order queue and publish to status queue
     channel.consume(OrderQueue, function (msg) {
@@ -29,8 +30,9 @@ async function main() {
             var msgToStatusQueue = JSON.stringify(obj);
             channel.sendToQueue(StatusQueue, Buffer.from(msgToStatusQueue));
             console.log('Sent message: ' + msgToStatusQueue);
+            channel.ack(msg);
         }, 7000);
-    }, { noAck: true });
+    }, { noAck: false });
 }
 
 main().catch(console.error);

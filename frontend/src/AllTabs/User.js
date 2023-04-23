@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import SandwichForm from './AddingBread';
+import './User.css';
 
-function User() {
-  const [logOrCreate, setLogOrCreate] = useState('');
+function User(props) {
+  const logOrCreate = props.logOrCreate;
+  const setLogOrCreate = props.setLogOrCreate;
+  const isAdmin = props.isAdmin;
+  const setIsAdmin = props.setIsAdmin;
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -35,6 +38,27 @@ function User() {
     }
   }
 
+  const deleteUser = async () => {
+    const confirmed = window.confirm('Are you sure you want to delete this account?');
+    if (confirmed) {
+      const response = await fetch(`http://localhost:3001/user/${username}`, {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          password: password,
+        })
+      });
+
+      if (response.ok) {
+        console.log("account deleted");
+        handleLogout();
+      }
+    }
+  }
+
   const loginUser = async () => {
     if (!username || !password) {
       setErrorMessage('Please enter a username and password');
@@ -53,25 +77,33 @@ function User() {
     });
     if (response.ok){
       setLogOrCreate('LoggedIn')
+      const data = await response.json();
+      if (data.role === "admin"){
+        setIsAdmin(true);
+      }
+      else {
+        setIsAdmin(false);
+      }
     }
-    const data = await response.json();
-    console.log(data);
+    else {
+      setErrorMessage('Login failed');
+    }
   }
 
   const handleLogout = () => {
     setLogOrCreate('');
     setErrorMessage('');
+    setIsAdmin(false);
   }
 
   return (
-    <div>
-      <div>User</div>
+    <div className='User'>
       {errorMessage && (
       <div style={{ color: 'red' }}>{errorMessage}</div>)}
       {logOrCreate === '' && (
         <div>
-          <button onClick={() => setLogOrCreate('Login')}>Login</button>
-          <button onClick={() => setLogOrCreate('Create')}>Create Account</button>
+          <button className='button' onClick={() => setLogOrCreate('Login')}>Login</button>
+          <button className='button' onClick={() => setLogOrCreate('Create')}>Create Account</button>
         </div>
       )}
 
@@ -79,8 +111,8 @@ function User() {
         <form>
           <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
           <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-          <button type="button" onClick={loginUser}>Login</button>
-          <button onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
+          <button className='button' type="button" onClick={loginUser}>Login</button>
+          <button className='button' onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
         </form>
       )}
 
@@ -89,15 +121,17 @@ function User() {
           <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
           <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
           <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-          <button type="button" onClick={() => {createUser();
+          <button className='button' type="button" onClick={() => {createUser();
           setLogOrCreate('')}}>Create Account</button>
-          <button onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
+          <button className='button' onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
         </form>
       )}
 
       {logOrCreate === 'LoggedIn' && (
         <div>
-        <button onClick={handleLogout}>Logout</button>
+        <button className='button' onClick={handleLogout}>Logout</button>
+        <button className='button' onClick={deleteUser} disabled={isAdmin}>Delete account</button>
+
         {isAdmin && (
           <SandwichForm setErrorMessage={setErrorMessage}></SandwichForm>
         )}

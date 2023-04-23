@@ -12,13 +12,16 @@ function App() {
   // useState for orders made by the user
   const [orderedSandwiches, setOrderedSandwiches] = useState('');
 
+  const [logOrCreate, setLogOrCreate] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+
   // Navigating between pages
   const handleNavClick = (page) => {
     setCurrentPage(page);
   };
 
   return (
-    <div>
+    <div className='background'>
       <nav className='flex'>
         <button className="pill-button">
           <span className="button-text" onClick={() => handleNavClick('API')}>Make Order</span>
@@ -31,7 +34,7 @@ function App() {
       <div>
         {currentPage === 'API' && <MakeOrder  orderedSandwiches={orderedSandwiches} setOrderedSandwiches={setOrderedSandwiches} />}
         {currentPage === 'OrderStatus' && <OrderStatus orderedSandwiches={orderedSandwiches}/>}
-        {currentPage === 'User' && <User />}
+        {currentPage === 'User' && <User logOrCreate={logOrCreate} setLogOrCreate={setLogOrCreate} isAdmin={isAdmin} setIsAdmin={setIsAdmin}/>}
       </div>
     </div>
   );

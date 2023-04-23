@@ -13,7 +13,7 @@ let rabbitChannel, rabbitConnection;
 const app = express();
 app.use(cors({
   origin: "http://localhost:3000",
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE"],
 }));
 app.use(express.json());
 
@@ -60,6 +60,9 @@ app.post("/user", (req, res) => {
 });
 app.post("/user/login", (req, res) => {
   user.handleUserLogin(req, res);
+});
+app.delete("/user/:username", (req, res) => {
+  user.handleDeleteUser(req, res, req.params.username);
 });
 
 // Start the App

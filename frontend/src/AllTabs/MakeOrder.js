@@ -3,8 +3,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
+import './MakeOrder.css';
 
 function MakeOrder(props) {
   const orderedSandwiches = props.orderedSandwiches;
@@ -80,13 +79,13 @@ function MakeOrder(props) {
   }, []);
 
     return (
-        <div>
-            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+        <div className='background'>
+            <List sx={{ width: '100%', bgcolor: '#474c57' }}>
                 {sandwiches.map((sandwich) => (
                     <React.Fragment key={sandwich.sandwich_id}>
                         <ListItem
                             alignItems="flex-start"
-                            secondaryAction={<button onClick={() => sendOrder({ sandwichId: sandwich.sandwich_id, status: 'ordered' })}>
+                            secondaryAction={<button className='order-button' onClick={() => sendOrder({ sandwichId: sandwich.sandwich_id, status: 'ordered' })}>
                                 Order
                             </button>}
                         >
