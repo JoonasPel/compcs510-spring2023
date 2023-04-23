@@ -17,9 +17,13 @@ function handleAddSandwich(req, res) {
     delete data.apiKey;
     db.createSandwich(data)
       .then(result => {
-        console.log("todo");
-        res.status(400);
-        res.send();
+        if (result) {
+          res.status(200);
+          res.send();
+        } else {
+          res.status(400);
+          res.send();
+        }
       })
   } else {
     res.status(403);
