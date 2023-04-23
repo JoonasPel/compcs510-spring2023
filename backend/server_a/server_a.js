@@ -23,21 +23,18 @@ async function startRabbit() {
     const rabbitURL = "amqp://guest:guest@rabbitmq:" + config.rabbitPORT.toString();
     rabbitConnection = await amqp.connect(rabbitURL);
     rabbitChannel = await rabbitConnection.createChannel();
-    // creates queue in RabbitMQ if queue with this name didn't exist yet
     await rabbitChannel.assertQueue(config.ORDER_QUEUE, { durable: false });
+    await rabbitChannel.assertQueue(config.STATUS_QUEUE, { durable: false });
+    // consumes handled orders from server b and updates the order data in db.
+    rabbitChannel.consume(config.STATUS_QUEUE, (msg) => {
+      const order = JSON.parse(msg.content.toString('utf-8'));
+      db.modifyOrder(order);
+    });
     console.log("Server A connected to Rabbit");
   } catch (error) {
     console.error("Server A got error when trying to setup Rabbit: ", error);
     process.exit(1);
   }
-}
-
-async function consumeRabbit(queueName) {
-  await rabbitChannel.assertQueue(queueName, { durable: false });
-  rabbitChannel.consume(queueName, (msg) => {
-    const order = JSON.parse(msg.content.toString('utf-8'));
-    db.modifyOrder(order);
-  });
 }
 
 // listen for order requests
@@ -68,10 +65,7 @@ const promise2 = db.createTables();
 let server;
 Promise.all([promise1, promise2]).then(() => {
   server = http.createServer(app).listen(config.nodejsPORT);
-  // consume rabbit status queue to receive updates about orders from server b
-  consumeRabbit(config.STATUS_QUEUE);
 });
-
 
 // catch ctrl + c or container closing
 process.on("SIGINT", () => closeGracefully());

@@ -19,24 +19,33 @@ async function createTables() {
     const ordersTableQuery = "CREATE TABLE IF NOT EXISTS orders " +
         "(id SERIAL PRIMARY KEY, sandwichId INTEGER, status VARCHAR(20) "+
         "CHECK (status IN ('ordered', 'received', 'inQueue', 'ready', 'failed')))";
-    const result = await execute(ordersTableQuery);
+    const resultOrders = await execute(ordersTableQuery);
+    if (!resultOrders) {return false;}
 
     // table for users
     const usersTableQuery = "CREATE TABLE IF NOT EXISTS users " +
       "(id SERIAL PRIMARY KEY, username VARCHAR(100), email VARCHAR(100), password VARCHAR(100))";
     const resultUsers = await execute(usersTableQuery);
+    if (!resultUsers) {return false;}
 
-    // create sandwich table
-    const sandwichQuery = "CREATE TABLE IF NOT EXISTS sandwiches ( id INTEGER PRIMARY KEY, name TEXT, bread_type TEXT )";
-    const toppingsQuery = "CREATE TABLE IF NOT EXISTS sandwich_toppings ( id INTEGER PRIMARY KEY, name TEXT, sandwich_id INTEGER, FOREIGN KEY (sandwich_id) REFERENCES sandwiches(id))";
-    const insertSandwichesQuery = "INSERT INTO sandwiches (id, name, bread_type) VALUES (0, 'Ham_sandwich', 'oat'), (1, 'Turkey_sandwich', 'oat')";
-    const insertToppingsQuery = "INSERT INTO sandwich_toppings (id, name, sandwich_id) VALUES (0, 'Cheese', 0), (1, 'Ham', 0), (2, 'Turkey', 1), (3, 'Cheese', 1)";
-    await execute(sandwichQuery);
-    await execute(toppingsQuery);
-    await execute(insertSandwichesQuery);
-    await execute(insertToppingsQuery);
+    // sandwich table with two sandwiches
+    const sandwichQuery = "CREATE TABLE IF NOT EXISTS sandwiches " +
+      "( id INTEGER PRIMARY KEY, name TEXT, bread_type TEXT )";
+    const toppingsQuery = "CREATE TABLE IF NOT EXISTS sandwich_toppings " +
+      "( id INTEGER PRIMARY KEY, name TEXT, sandwich_id INTEGER, FOREIGN KEY (sandwich_id) " +
+      "REFERENCES sandwiches(id))";
+    const insertSandwichesQuery = "INSERT INTO sandwiches (id, name, bread_type) VALUES "+
+      "(0, 'Ham_sandwich', 'oat'), (1, 'Turkey_sandwich', 'oat')";
+    const insertToppingsQuery = "INSERT INTO sandwich_toppings (id, name, sandwich_id) VALUES "+
+      "(0, 'Cheese', 0), (1, 'Ham', 0), (2, 'Turkey', 1), (3, 'Cheese', 1)";
+    const queries = [sandwichQuery, toppingsQuery, insertSandwichesQuery, insertToppingsQuery];
+    for (const query of queries) {
+      const result = await execute(query);
+      if (!result) {return false;}
+    }
 
-    return typeof result === "object";
+    // nothing went wrong if we got here
+    return true;
 };
 
 async function getSandwiches() {
