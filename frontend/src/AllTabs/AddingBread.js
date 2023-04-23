@@ -16,7 +16,7 @@ function SandwichForm(props) {
     }
 
     const newSandwich = { name, toppings, breadType, apiKey };
-    const response = await fetch('http://localhost:3001/user/sandwich', {
+    const response = await fetch('http://localhost:3001/sandwich', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newSandwich)
