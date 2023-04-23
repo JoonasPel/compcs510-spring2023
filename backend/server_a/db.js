@@ -206,6 +206,7 @@ module.exports = {
     getOrder,
     getAllOrders,
     getSandwiches,
+    createSandwich,
     addUser,
     deleteUser,
     checkUserCredentials,

@@ -32,6 +32,8 @@ services:
     depends_on:
       - "server_b"
     command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_a.js'
+    environment:
+      CREATE_SANDWICH_API_KEY: sub30
 
   db:
     image: postgres:15

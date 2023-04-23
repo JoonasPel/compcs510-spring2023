@@ -4,6 +4,7 @@ const http = require("http");
 const cors = require("cors");
 const order = require("./routes/order");
 const user = require("./routes/user");
+const sandwich = require("./routes/sandwich");
 const config = require("./configs")
 const db = require("./db");
 
@@ -47,13 +48,18 @@ app.get("/order", (req, res) => {
 app.get("/order/:orderId", (req, res) => {
   order.handleOrderStatusRequest(req, res, req.params.orderId);
 });
+
 // listen for sandwich requests
 app.get("/sandwich", (req, res) => {
-  db.getSandwiches()
-  .then(sandwiches => {
-    res.status(200).json(sandwiches);
-  });
+  sandwich.handleGetSandwiches(req, res);
 });
+app.post("/sandwich", (req, res) => {
+  sandwich.handleAddSandwich(req, res);
+});
+app.delete("/sandwich/:sandwichId", (req, res) => {
+  sandwich.handleDeleteSandwich(req, res, req.params.sandwichId);
+});
+
 // listen for user requests
 app.post("/user", (req, res) => {
   user.handleUserRegistering(req, res);
