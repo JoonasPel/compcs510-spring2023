@@ -34,14 +34,14 @@ async function createTables() {
 
     // sandwich table with two sandwiches
     const sandwichQuery = "CREATE TABLE IF NOT EXISTS sandwiches " +
-      "( id INTEGER PRIMARY KEY, name TEXT, bread_type TEXT )";
+      "( id SERIAL PRIMARY KEY, name TEXT UNIQUE, bread_type TEXT )";
     const toppingsQuery = "CREATE TABLE IF NOT EXISTS sandwich_toppings " +
-      "( id INTEGER PRIMARY KEY, name TEXT, sandwich_id INTEGER, FOREIGN KEY (sandwich_id) " +
-      "REFERENCES sandwiches(id))";
-    const insertSandwichesQuery = "INSERT INTO sandwiches (id, name, bread_type) VALUES "+
-      "(0, 'Ham_sandwich', 'oat'), (1, 'Turkey_sandwich', 'oat')";
-    const insertToppingsQuery = "INSERT INTO sandwich_toppings (id, name, sandwich_id) VALUES "+
-      "(0, 'Cheese', 0), (1, 'Ham', 0), (2, 'Turkey', 1), (3, 'Cheese', 1)";
+      "( id SERIAL PRIMARY KEY, name TEXT, sandwich_id INTEGER, FOREIGN KEY (sandwich_id) " +
+      "REFERENCES sandwiches(id) ON DELETE CASCADE)";
+    const insertSandwichesQuery = "INSERT INTO sandwiches (name, bread_type) VALUES "+
+      "('Ham_sandwich', 'oat'), ('Turkey_sandwich', 'oat')";
+    const insertToppingsQuery = "INSERT INTO sandwich_toppings (name, sandwich_id) VALUES "+
+      "('Cheese', 1), ('Ham', 1), ('Turkey', 2), ('Cheese', 2)";
     const queries = [sandwichQuery, toppingsQuery, insertSandwichesQuery, insertToppingsQuery];
     for (const query of queries) {
       const result = await execute(query);
@@ -113,8 +113,46 @@ async function checkUserCredentials(user) {
 };
 
 async function createSandwich(params) {
-  console.log("TODO TODO TODO");
-}
+  /* example data
+    {
+      name: "bmt",
+      toppings: { kinkku, juusto, salaatti},
+      breadType: hunajakaura,
+      apiKey: sub30,
+    }
+  */
+
+  // Parse data for the new bread
+  const bread = JSON.parse(params);
+  const breadName = JSON.stringify(bread.name);
+  const breadType = JSON.stringify(bread.breadType);
+  var values = [breadName, breadType];
+
+  // Add new bread
+  const createNewBreadQuery = "INSERT INTO public.sandwiches(name, bread_type) VALUES ('$1', '$2')";
+  var result = await execute(createNewBreadQuery, valuesNewBread);
+  if (!result) {return false;}
+
+  // Get id for the newly added bread
+  const getBreadIdQuery = "SELECT id FROM public.sandwiches WHERE name = '$1'";
+  result = await execute(getBreadIdQuery, values);
+  if (!result) {return false;}
+  var sandwichId = -1;
+  if (typeof result02 === "object") {
+    sandwichId = result02.rows[0];
+    console.log('Tää tulosti täallsen id:n ' + sandwichId);
+  }
+
+  // Create new rows for the toppings
+  const createNewToppingQuery = "INSERT INTO public.sandwich_toppings(name, sandwich_id) VALUES ('$1', $2);";
+  var result03
+  for (const topping of bread.toppings) { 
+    values = [JSON.stringify(topping), sandwichId];
+    result = await execute(createNewToppingQuery, values);
+    if (!result) {return false;}
+  }
+  return true;
+};
 
 /**
  * Gets order from DB with id
