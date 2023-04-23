@@ -43,6 +43,8 @@ services:
       POSTGRES_USER: unknown
       POSTGRES_PASSWORD: h8737f5242fsdocf32mof
       POSTGRES_DB: MAKEMESANDWICH_DB
+    ports:
+      - 5432:5432
     networks:
       - app-network
   adminer:
