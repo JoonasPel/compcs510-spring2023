@@ -14,22 +14,27 @@ function MakeOrder(props) {
   const [success, setSuccess] = useState(false);
   const [sandwiches, setSandwiches] = useState([]);
 
-  const deleteSandwich = async(str) => {
-    console.log(str);
-    const apikey = 'sub30';
+  const deleteSandwich = async (str) => {
+    const apiKey = window.prompt('Enter API key:');
+    if (!apiKey) {
+      // User clicked "Cancel" or entered an empty string
+      return;
+    }
+    const data = { apiKey };
+    console.log(apiKey);
     try {
       setLoading(true);
       setError(null);
       setSuccess(false);
-      const response = await fetch(`http://localhost:3001/sandwich/${str}/`, {
+      const response = await fetch(`http://localhost:3001/sandwich/${str}`, {
         method: 'DELETE',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(apikey)
+        body: JSON.stringify(data)
       });
       setLoading(false);
       if (response.ok) {
-        console.log('sandwich deleted')
+        console.log('sandwich deleted');
       } else {
         setError('Failed to delete sandwich');
         console.error('Error:', response);
