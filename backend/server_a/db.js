@@ -148,36 +148,35 @@ async function createSandwich(params) {
       name: "bmt",
       toppings: { kinkku, juusto, salaatti},
       breadType: hunajakaura,
-      apiKey: sub30,
+      apiKey:
     }
   */
 
   // Parse data for the new bread
-  const bread = JSON.parse(params);
-  const breadName = JSON.stringify(bread.name);
-  const breadType = JSON.stringify(bread.breadType);
+  const bread = params;
+  const breadName = bread.name;
+  const breadType = bread.breadType;
   var values = [breadName, breadType];
 
   // Add new bread
-  const createNewBreadQuery = "INSERT INTO public.sandwiches(name, bread_type) VALUES ('$1', '$2')";
-  var result = await execute(createNewBreadQuery, valuesNewBread);
+  const createNewBreadQuery = "INSERT INTO public.sandwiches(name, bread_type) VALUES ($1, $2)";
+  var result = await execute(createNewBreadQuery, values);
   if (!result) {return false;}
 
   // Get id for the newly added bread
-  const getBreadIdQuery = "SELECT id FROM public.sandwiches WHERE name = '$1'";
+  const getBreadIdQuery = "SELECT id FROM public.sandwiches WHERE name = $1";
+  values = [breadName];
   result = await execute(getBreadIdQuery, values);
   if (!result) {return false;}
   var sandwichId = -1;
-  if (typeof result02 === "object") {
-    sandwichId = result02.rows[0];
-    console.log('Tää tulosti täallsen id:n ' + sandwichId);
+  if (typeof result === "object") {
+    sandwichId = result.rows[0].id;
   }
 
   // Create new rows for the toppings
-  const createNewToppingQuery = "INSERT INTO public.sandwich_toppings(name, sandwich_id) VALUES ('$1', $2);";
-  var result03
-  for (const topping of bread.toppings) { 
-    values = [JSON.stringify(topping), sandwichId];
+  const createNewToppingQuery = "INSERT INTO public.sandwich_toppings(name, sandwich_id) VALUES ($1, $2);";
+  for (var topping of bread.toppings) { 
+    values = [topping.name, sandwichId];
     result = await execute(createNewToppingQuery, values);
     if (!result) {return false;}
   }
