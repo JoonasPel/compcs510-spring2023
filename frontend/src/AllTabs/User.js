@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import SandwichForm from './AddingBread';
 
-function User() {
-  const [logOrCreate, setLogOrCreate] = useState('');
+function User(props) {
+  const logOrCreate = props.logOrCreate;
+  const setLogOrCreate = props.setLogOrCreate;
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

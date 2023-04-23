@@ -12,6 +12,8 @@ function App() {
   // useState for orders made by the user
   const [orderedSandwiches, setOrderedSandwiches] = useState('');
 
+  const [logOrCreate, setLogOrCreate] = useState('');
+
   // Navigating between pages
   const handleNavClick = (page) => {
     setCurrentPage(page);
@@ -31,7 +33,7 @@ function App() {
       <div>
         {currentPage === 'API' && <MakeOrder  orderedSandwiches={orderedSandwiches} setOrderedSandwiches={setOrderedSandwiches} />}
         {currentPage === 'OrderStatus' && <OrderStatus orderedSandwiches={orderedSandwiches}/>}
-        {currentPage === 'User' && <User />}
+        {currentPage === 'User' && <User logOrCreate={logOrCreate} setLogOrCreate={setLogOrCreate}/>}
       </div>
     </div>
   );
