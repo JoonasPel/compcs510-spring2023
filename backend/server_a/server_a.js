@@ -58,6 +58,9 @@ app.get("/sandwich", (req, res) => {
 app.post("/user", (req, res) => {
   user.handleUserRegistering(req, res);
 });
+app.post("/user/login", (req, res) => {
+  user.handleUserLogin(req, res);
+});
 
 // Start the App
 const promise1 = startRabbit();

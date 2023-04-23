@@ -10,15 +10,37 @@ function handleUserRegistering(req, res) {
         if (result) {
           res.status(201);
           res.send();
-          return;
         } else {
           res.status(400);
           res.send();
         }
-      }); 
+      });
+  } else {
+    res.status(400);
+    res.send();   
+  }
+};
+
+function handleUserLogin(req, res) {
+  const user = req.body;
+  if (user.hasOwnProperty("username") && user.hasOwnProperty("password")) {
+    db.checkUserCredentials(user)
+      .then(result => {
+        if (result) {
+          res.status(200);
+          res.send();
+        } else {
+          res.status(400);
+          res.send();
+        }
+    });
+  } else {
+    res.status(400);
+    res.send();
   }
 };
 
 module.exports = {
   handleUserRegistering,
+  handleUserLogin,
 };

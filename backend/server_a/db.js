@@ -27,6 +27,10 @@ async function createTables() {
       "(id SERIAL PRIMARY KEY, username VARCHAR(100), email VARCHAR(100), password VARCHAR(100))";
     const resultUsers = await execute(usersTableQuery);
     if (!resultUsers) {return false;}
+    // admin account
+    const admin = {username: "admin55", email: "admin55@email.com", password: "secret55"};
+    const resultAdmin = await addUser(admin);
+    if (!resultAdmin) {return false;}
 
     // sandwich table with two sandwiches
     const sandwichQuery = "CREATE TABLE IF NOT EXISTS sandwiches " +
@@ -102,8 +106,15 @@ async function addUser(user) {
 };
 
 async function checkUserCredentials(user) {
-  console.log("TODO TODO TODO");
+  const logInQuery = "SELECT * FROM users WHERE username = $1 AND password = $2 LIMIT 1";
+  const values = [user.username, user.password];
+  const result = await execute(logInQuery, values);
+  return typeof result === "object" && result.rows.length === 1;
 };
+
+async function createSandwich(params) {
+  console.log("TODO TODO TODO");
+}
 
 /**
  * Gets order from DB with id
@@ -166,4 +177,5 @@ module.exports = {
     getAllOrders,
     getSandwiches,
     addUser,
+    checkUserCredentials,
 };
