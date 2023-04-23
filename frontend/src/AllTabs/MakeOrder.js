@@ -79,8 +79,8 @@ function MakeOrder(props) {
   }, []);
 
     return (
-        <div>
-            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+        <div className='background'>
+            <List sx={{ width: '100%', bgcolor: '#474c57' }}>
                 {sandwiches.map((sandwich) => (
                     <React.Fragment key={sandwich.sandwich_id}>
                         <ListItem

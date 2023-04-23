@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #474c57;
 }
 
 .refresh-button {

@@ -85,6 +85,9 @@ function User(props) {
         setIsAdmin(false);
       }
     }
+    else {
+      setErrorMessage('Login failed');
+    }
   }
 
   const handleLogout = () => {

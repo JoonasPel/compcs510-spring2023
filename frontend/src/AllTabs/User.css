@@ -28,8 +28,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #474c57;
 }
 
 button[disabled] {
     background-color: gray;
 }
+
+.background {
+    background-color:#474c57;
+  }

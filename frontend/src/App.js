@@ -21,7 +21,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className='background'>
       <nav className='flex'>
         <button className="pill-button">
           <span className="button-text" onClick={() => handleNavClick('API')}>Make Order</span>
