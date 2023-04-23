@@ -32,7 +32,7 @@ function App() {
         </button>
       </nav>
       <div>
-        {currentPage === 'API' && <MakeOrder  orderedSandwiches={orderedSandwiches} setOrderedSandwiches={setOrderedSandwiches} />}
+        {currentPage === 'API' && <MakeOrder  orderedSandwiches={orderedSandwiches} setOrderedSandwiches={setOrderedSandwiches} isAdmin={isAdmin}/>}
         {currentPage === 'OrderStatus' && <OrderStatus orderedSandwiches={orderedSandwiches}/>}
         {currentPage === 'User' && <User logOrCreate={logOrCreate} setLogOrCreate={setLogOrCreate} isAdmin={isAdmin} setIsAdmin={setIsAdmin}/>}
       </div>

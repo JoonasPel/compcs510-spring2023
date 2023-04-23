@@ -21,8 +21,13 @@ function SandwichForm(props) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newSandwich)
     });
-    const data = await response.json();
-    console.log(data);
+    if (response.ok){
+      setName('');
+      setToppings([]);
+      setBreadType('');
+      setApiKey('');
+      document.getElementById('toppings-input').value = '';
+    }
   };
 
   const handleToppingsChange = (e) => {
@@ -40,7 +45,7 @@ function SandwichForm(props) {
       <br />
       <label>
         Toppings (separated by commas): 
-        <input className='input' type="text" onChange={handleToppingsChange} />
+        <input id='toppings-input' className='input' type="text" onChange={handleToppingsChange} />
       </label>
       <br />
       <label>

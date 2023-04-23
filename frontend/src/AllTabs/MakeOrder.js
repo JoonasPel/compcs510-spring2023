@@ -6,6 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import './MakeOrder.css';
 
 function MakeOrder(props) {
+  const isAdmin = props.isAdmin;
   const orderedSandwiches = props.orderedSandwiches;
   const setOrderedSandwiches = props.setOrderedSandwiches;
   const [loading, setLoading] = useState(false);
@@ -13,6 +14,32 @@ function MakeOrder(props) {
   const [success, setSuccess] = useState(false);
   const [sandwiches, setSandwiches] = useState([]);
 
+  const deleteSandwich = async(str) => {
+    console.log(str);
+    const apikey = 'sub30';
+    try {
+      setLoading(true);
+      setError(null);
+      setSuccess(false);
+      const response = await fetch(`http://localhost:3001/sandwich/${str}/`, {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apikey)
+      });
+      setLoading(false);
+      if (response.ok) {
+        console.log('sandwich deleted')
+      } else {
+        setError('Failed to delete sandwich');
+        console.error('Error:', response);
+      }
+    } catch (error) {
+      setLoading(false);
+      setError('Failed to send order.');
+      console.error('Error:', error);
+    }
+  };
 
   // Sending sandwich order to server
   const sendOrder = async (str) => {
@@ -78,26 +105,58 @@ function MakeOrder(props) {
     fetchSandwiches();
   }, []);
 
-    return (
-        <div className='background'>
-            <List sx={{ width: '100%', bgcolor: '#474c57' }}>
-                {sandwiches.map((sandwich) => (
-                    <React.Fragment key={sandwich.sandwich_id}>
-                        <ListItem
-                            alignItems="flex-start"
-                            secondaryAction={<button className='order-button' onClick={() => sendOrder({ sandwichId: sandwich.sandwich_id, status: 'ordered' })}>
-                                Order
-                            </button>}
-                        >
-                            <ListItemText primary={sandwich.sandwich_name}secondary={"Bread Type: " + sandwich.bread_type} />
-                            <ListItemText primary="Toppings:" secondary= {sandwich.toppings.join(', ')}/>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-                    </React.Fragment>
-                ))}
-            </List>
-        </div>
-    );
+  return (
+    <div className='background'>
+      <List sx={{ width: '100%', bgcolor: '#474c57' }}>
+        {sandwiches.map((sandwich) => (
+          <React.Fragment key={sandwich.sandwich_id}>
+            <ListItem
+              alignItems="flex-start"
+              secondaryAction={
+                isAdmin ? (
+                  <>
+                    <button
+                      className="order-button"
+                      onClick={() =>
+                        sendOrder({
+                          sandwichId: sandwich.sandwich_id,
+                          status: "ordered",
+                        })
+                      }
+                    >
+                      Order
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => deleteSandwich(sandwich.sandwich_id)}
+                    >
+                      Delete
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="order-button"
+                    onClick={() =>
+                      sendOrder({
+                        sandwichId: sandwich.sandwich_id,
+                        status: "ordered",
+                      })
+                    }
+                  >
+                    Order
+                  </button>
+                )
+              }
+            >
+              <ListItemText primary={sandwich.sandwich_name} secondary={"Bread Type: " + sandwich.bread_type} />
+              <ListItemText primary="Toppings:" secondary={sandwich.toppings.join(', ')} />
+            </ListItem>
+            <Divider variant="inset" component="li" />
+          </React.Fragment>
+        ))}
+      </List>
+    </div>
+  );
 }
 
 export default MakeOrder;
