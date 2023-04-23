@@ -183,6 +183,13 @@ async function createSandwich(params) {
   return true;
 };
 
+async function deleteSandwich(id) {
+  const deleteSandwichQuery = "DELETE FROM sandwiches WHERE id = $1";
+  const values = [id]
+  const result = await execute(deleteSandwichQuery, values);
+  return typeof result === "object";
+};
+
 /**
  * Gets order from DB with id
  * @param {int64} orderId 
@@ -244,6 +251,7 @@ module.exports = {
     getAllOrders,
     getSandwiches,
     createSandwich,
+    deleteSandwich,
     addUser,
     deleteUser,
     checkUserCredentials,

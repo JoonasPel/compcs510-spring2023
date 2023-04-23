@@ -29,11 +29,25 @@ function handleAddSandwich(req, res) {
     res.status(403);
     res.send();
   }
-}
+};
 
 function handleDeleteSandwich(req, res, sandwichId) {
-
-}
+  if (req.body.apiKey == API_KEY) {
+    db.deleteSandwich(sandwichId)
+      .then(result => {
+        if (result) {
+          res.status(200);
+          res.send();
+        } else {
+          res.status(400);
+          res.send();
+        }
+      })
+  } else {
+    res.status(403);
+    res.send();
+  }
+};
 
 module.exports = {
   handleGetSandwiches,
