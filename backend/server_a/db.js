@@ -24,12 +24,13 @@ async function createTables() {
 
     // table for users
     const usersTableQuery = "CREATE TABLE IF NOT EXISTS users " +
-      "(id SERIAL PRIMARY KEY, username VARCHAR(100), email VARCHAR(100), password VARCHAR(100))";
+      "(id SERIAL PRIMARY KEY, username VARCHAR(100), email VARCHAR(100), password VARCHAR(100), "+
+        "role VARCHAR(10) CHECK (role IN ('customer', 'admin')))";
     const resultUsers = await execute(usersTableQuery);
     if (!resultUsers) {return false;}
-    // admin account
+    // admin account (yes it is unsafe this way)
     const admin = {username: "admin55", email: "admin55@email.com", password: "secret55"};
-    const resultAdmin = await addUser(admin);
+    const resultAdmin = await addUser(admin, isAdmin=true);
     if (!resultAdmin) {return false;}
 
     // sandwich table with two sandwiches
@@ -98,23 +99,34 @@ async function modifyOrder(orderWithNewValues) {
   return false;
 };
 
-async function addUser(user) {
-  const insertUserQuery = "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)";
-  const values = [user.username, user.email, user.password];
+async function addUser(user, isAdmin=false) {
+  const insertUserQuery = "INSERT INTO users (username, email, password, role) VALUES ($1, $2, $3, $4)";
+  const role = isAdmin ? "admin" : "customer";
+  const values = [user.username, user.email, user.password, role];
   const result = await execute(insertUserQuery, values);
   return typeof result === "object";
 };
 
+/**
+ * checks if user credentials are correct
+ * @param {Object} user
+ * @returns user role. if credentials incorrect, returns false
+ */
 async function checkUserCredentials(user) {
   const logInQuery = "SELECT * FROM users WHERE username = $1 AND password = $2 LIMIT 1";
   const values = [user.username, user.password];
   const result = await execute(logInQuery, values);
-  return typeof result === "object" && result.rows.length === 1;
+  if (typeof result === "object" && result.rows.length === 1) {
+    const role = result.rows[0].role;
+    return role;
+  } else {
+    return false;
+  }
 };
 
 async function createSandwich(params) {
   console.log("TODO TODO TODO");
-}
+};
 
 /**
  * Gets order from DB with id
