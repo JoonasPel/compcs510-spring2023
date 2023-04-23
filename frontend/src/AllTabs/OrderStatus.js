@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import './OrderStatus.css';
 
 function OrderStatus(props) {
   const orderedSandwiches = props.orderedSandwiches;
   const [statusArray, setStatusArray] = useState([]);
-
 
   // Get statuses for orders made from your tab (Does not get all results just the ones made from your current tab
   // This means that multiple users should be able to make orders and not get them mixed up)
@@ -33,9 +33,9 @@ function OrderStatus(props) {
   }, [orderedSandwiches]);
 
   return (
-    <div>
-      <button onClick={handleRefreshClick}>Refresh</button>
-      <ul>
+    <div className="order-status-container">
+      <button className="refresh-button" onClick={handleRefreshClick}>Refresh</button>
+      <ul className="order-status-list">
         {statusArray.sort((a, b) => b.id - a.id).map((item) => (
           <div key={item.id}>Order ID: {item.id}, Order Status: {item.status}</div>
         ))}
