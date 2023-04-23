@@ -4,12 +4,14 @@ import SandwichForm from './AddingBread';
 function User(props) {
   const logOrCreate = props.logOrCreate;
   const setLogOrCreate = props.setLogOrCreate;
+  const isAdmin = props.isAdmin;
+  const setIsAdmin = props.setIsAdmin;
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
 
+  console.log("admini", isAdmin);
   const [errorMessage, setErrorMessage] = useState('');
 
   const createUser = async () => {
@@ -78,6 +80,9 @@ function User(props) {
       const data = await response.json();
       if (data.role === "admin"){
         setIsAdmin(true);
+      }
+      else {
+        setIsAdmin(false);
       }
     }
   }
