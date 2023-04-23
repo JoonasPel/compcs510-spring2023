@@ -35,6 +35,27 @@ function User() {
     }
   }
 
+  const deleteUser = async () => {
+    const confirmed = window.confirm('Are you sure you want to delete this account?');
+    if (confirmed) {
+      const response = await fetch(`http://localhost:3001/user/${username}`, {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          password: password,
+        })
+      });
+
+      if (response.ok) {
+        console.log("account deleted");
+        handleLogout();
+      }
+    }
+  }
+
   const loginUser = async () => {
     if (!username || !password) {
       setErrorMessage('Please enter a username and password');
@@ -53,14 +74,17 @@ function User() {
     });
     if (response.ok){
       setLogOrCreate('LoggedIn')
+      const data = await response.json();
+      if (data.role === "admin"){
+        setIsAdmin(true);
+      }
     }
-    const data = await response.json();
-    console.log(data);
   }
 
   const handleLogout = () => {
     setLogOrCreate('');
     setErrorMessage('');
+    setIsAdmin(false);
   }
 
   return (
@@ -98,6 +122,9 @@ function User() {
       {logOrCreate === 'LoggedIn' && (
         <div>
         <button onClick={handleLogout}>Logout</button>
+        {!isAdmin && (
+          <button onClick={deleteUser}>Delete account</button>
+        )}
         {isAdmin && (
           <SandwichForm setErrorMessage={setErrorMessage}></SandwichForm>
         )}
