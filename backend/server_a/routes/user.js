@@ -39,7 +39,27 @@ function handleUserLogin(req, res) {
   }
 };
 
+function handleDeleteUser(req, res, username) {
+  const data = req.body;
+  if (data.hasOwnProperty("password")) {
+    db.deleteUser(username, data.password)
+      .then(result => {
+        if (result) {
+          res.status(200);
+          res.send();
+        } else {
+          res.status(400);
+          res.send();
+        }
+      });
+  } else {
+    res.status(401);
+    res.send();
+  }
+};
+
 module.exports = {
   handleUserRegistering,
   handleUserLogin,
+  handleDeleteUser,
 };
