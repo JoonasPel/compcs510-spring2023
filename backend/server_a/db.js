@@ -108,6 +108,24 @@ async function addUser(user, isAdmin=false) {
 };
 
 /**
+ * Deletes user if correct credentials(username, password) given. Can't delete admin.
+ * @param {*} username 
+ * @param {*} password 
+ * @returns true if succesfull, false otherwise.
+ */
+async function deleteUser(username, password) {
+  const result = await checkUserCredentials({username, password});
+  if (result && result !== "admin") {
+    const deleteUserQuery = "DELETE FROM users WHERE username = $1 AND password = $2";
+    const values = [username, password];
+    const deletingResult = await execute(deleteUserQuery, values);
+    return typeof deletingResult === "object";
+  } else {
+    return false;
+  }
+};
+
+/**
  * checks if user credentials are correct
  * @param {Object} user
  * @returns user role. if credentials incorrect, returns false
@@ -189,5 +207,6 @@ module.exports = {
     getAllOrders,
     getSandwiches,
     addUser,
+    deleteUser,
     checkUserCredentials,
 };
