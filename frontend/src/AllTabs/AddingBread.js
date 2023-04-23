@@ -31,29 +31,31 @@ function SandwichForm(props) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div className='AddingBread'>
+    <form className='form' onSubmit={handleSubmit}>
       <label>
         Sandwich Name: 
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+        <input className='input' type="text" value={name} onChange={(e) => setName(e.target.value)} />
       </label>
       <br />
       <label>
         Toppings (separated by commas): 
-        <input type="text" onChange={handleToppingsChange} />
+        <input className='input' type="text" onChange={handleToppingsChange} />
       </label>
       <br />
       <label>
         Bread Type: 
-        <input type="text" value={breadType} onChange={(e) => setBreadType(e.target.value)} />
+        <input className='input' type="text" value={breadType} onChange={(e) => setBreadType(e.target.value)} />
       </label>
       <br />
       <label>
         Enter API-KEY: 
-        <input type="text" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+        <input className='input' type="text" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
       </label>
       <br />
       <button className='button' type="submit">Submit</button>
     </form>
+    </div>
   );
 }
 

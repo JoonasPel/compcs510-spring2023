@@ -94,7 +94,7 @@ function User(props) {
   }
 
   return (
-    <div>
+    <div className='User'>
       {errorMessage && (
       <div style={{ color: 'red' }}>{errorMessage}</div>)}
       {logOrCreate === '' && (
@@ -127,9 +127,8 @@ function User(props) {
       {logOrCreate === 'LoggedIn' && (
         <div>
         <button className='button' onClick={handleLogout}>Logout</button>
-        {!isAdmin && (
-          <button className='button' onClick={deleteUser}>Delete account</button>
-        )}
+        <button className='button' onClick={deleteUser} disabled={isAdmin}>Delete account</button>
+
         {isAdmin && (
           <SandwichForm setErrorMessage={setErrorMessage}></SandwichForm>
         )}
