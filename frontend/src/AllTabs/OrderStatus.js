@@ -4,6 +4,7 @@ import './OrderStatus.css';
 function OrderStatus(props) {
   const orderedSandwiches = props.orderedSandwiches;
   const [statusArray, setStatusArray] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
 
   // Get statuses for orders made from your tab (Does not get all results just the ones made from your current tab
   // This means that multiple users should be able to make orders and not get them mixed up)
@@ -22,7 +23,13 @@ function OrderStatus(props) {
   const handleRefreshClick = async () => {
     const fetchedStatusArray = await getOrderStatus(orderedSandwiches);
     setStatusArray(fetchedStatusArray);
-  }
+    setIsClicked(true);
+    setTimeout(() => {
+      setIsClicked(false);
+    }, 100);
+  };
+
+
 
   useEffect(() => {
     const fetchStatuses = async () => {
@@ -34,7 +41,12 @@ function OrderStatus(props) {
 
   return (
     <div className="order-status-container">
-      <button className="refresh-button" onClick={handleRefreshClick}>Refresh</button>
+      <button
+        className={`refresh-button ${isClicked ? 'clicked' : ''}`}
+        onClick={handleRefreshClick}
+      >
+        Refresh
+      </button>
       <ul className="order-status-list">
         {statusArray.sort((a, b) => b.id - a.id).map((item) => (
           <div key={item.id}>Order ID: {item.id}, Order Status: {item.status}</div>

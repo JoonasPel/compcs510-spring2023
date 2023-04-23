@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SandwichForm from './AddingBread';
+import './User.css';
 
 function User(props) {
   const logOrCreate = props.logOrCreate;
@@ -11,7 +12,6 @@ function User(props) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
-  console.log("admini", isAdmin);
   const [errorMessage, setErrorMessage] = useState('');
 
   const createUser = async () => {
@@ -95,13 +95,12 @@ function User(props) {
 
   return (
     <div>
-      <div>User</div>
       {errorMessage && (
       <div style={{ color: 'red' }}>{errorMessage}</div>)}
       {logOrCreate === '' && (
         <div>
-          <button onClick={() => setLogOrCreate('Login')}>Login</button>
-          <button onClick={() => setLogOrCreate('Create')}>Create Account</button>
+          <button className='button' onClick={() => setLogOrCreate('Login')}>Login</button>
+          <button className='button' onClick={() => setLogOrCreate('Create')}>Create Account</button>
         </div>
       )}
 
@@ -109,8 +108,8 @@ function User(props) {
         <form>
           <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
           <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-          <button type="button" onClick={loginUser}>Login</button>
-          <button onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
+          <button className='button' type="button" onClick={loginUser}>Login</button>
+          <button className='button' onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
         </form>
       )}
 
@@ -119,17 +118,17 @@ function User(props) {
           <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
           <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
           <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-          <button type="button" onClick={() => {createUser();
+          <button className='button' type="button" onClick={() => {createUser();
           setLogOrCreate('')}}>Create Account</button>
-          <button onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
+          <button className='button' onClick={() => {setLogOrCreate(''); setErrorMessage('');}}>Back</button>
         </form>
       )}
 
       {logOrCreate === 'LoggedIn' && (
         <div>
-        <button onClick={handleLogout}>Logout</button>
+        <button className='button' onClick={handleLogout}>Logout</button>
         {!isAdmin && (
-          <button onClick={deleteUser}>Delete account</button>
+          <button className='button' onClick={deleteUser}>Delete account</button>
         )}
         {isAdmin && (
           <SandwichForm setErrorMessage={setErrorMessage}></SandwichForm>

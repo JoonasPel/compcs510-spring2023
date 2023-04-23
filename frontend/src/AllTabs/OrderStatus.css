@@ -16,6 +16,10 @@
     cursor: pointer;
 }
 
+.clicked {
+    background-color: #0066CC;
+  }
+
 
 .order-status-list {
     list-style: none;
