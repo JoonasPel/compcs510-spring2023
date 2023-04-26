@@ -14,7 +14,7 @@ function MakeOrder(props) {
   
   const fetchSandwiches = async () => {
     try {
-      const response = await fetch('http://localhost:3001/sandwich');
+      const response = await fetch('http://tie-webarc-38.it.tuni.fi:3001/sandwich');
       if (response.ok) {
         const data = await response.json();
 
@@ -53,7 +53,7 @@ function MakeOrder(props) {
     const data = { apiKey };
     console.log(apiKey);
     try {
-      const response = await fetch(`http://localhost:3001/sandwich/${str}`, {
+      const response = await fetch(`http://tie-webarc-38.it.tuni.fi:3001/${str}`, {
         method: 'DELETE',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
@@ -74,7 +74,7 @@ function MakeOrder(props) {
   // Sending sandwich order to server
   const sendOrder = async (str) => {
     try {
-      const response = await fetch('http://localhost:3001/order', {
+      const response = await fetch('http://tie-webarc-38.it.tuni.fi:3001/order', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(str),

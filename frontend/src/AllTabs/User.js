@@ -20,7 +20,7 @@ function User(props) {
       return;
     }
 
-    const response = await fetch('http://localhost:3001/user', {
+    const response = await fetch('http://tie-webarc-38.it.tuni.fi:3001/user', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -41,7 +41,7 @@ function User(props) {
   const deleteUser = async () => {
     const confirmed = window.confirm('Are you sure you want to delete this account?');
     if (confirmed) {
-      const response = await fetch(`http://localhost:3001/user/${username}`, {
+      const response = await fetch(`http://tie-webarc-38.it.tuni.fi:3001/${username}`, {
         method: 'DELETE',
         mode: 'cors',
         headers: {
@@ -64,7 +64,7 @@ function User(props) {
       setErrorMessage('Please enter a username and password');
       return;
     }
-    const response = await fetch('http://localhost:3001/user/login', {
+    const response = await fetch('http://tie-webarc-38.it.tuni.fi:3001/login', {
       method: 'POST',
       mode: 'cors',
       headers: {

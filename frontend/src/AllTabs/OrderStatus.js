@@ -12,7 +12,7 @@ function OrderStatus(props) {
     const fetchedStatusArray = [];
 
     for (const id of orderedSandwiches) {
-      const response = await fetch(`http://localhost:3001/order/${id}/`);
+      const response = await fetch(`http://tie-webarc-38.it.tuni.fi:3001/${id}/`);
       const data = await response.json();
       fetchedStatusArray.push({ id, status: data.status });
     }
