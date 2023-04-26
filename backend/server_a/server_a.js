@@ -13,7 +13,7 @@ let rabbitChannel, rabbitConnection;
 // Nodejs server configs
 const app = express();
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "http://tie-webarc-38.it.tuni.fi:3000",
   methods: ["GET", "POST", "DELETE"],
 }));
 app.use(express.json());
@@ -36,7 +36,7 @@ async function startRabbit() {
     console.error("Server A got error when trying to setup Rabbit: ", error);
     process.exit(1);
   }
-}
+};
 
 // listen for order requests
 app.post("/order", (req, res) => {
