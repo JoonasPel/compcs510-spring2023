@@ -6,10 +6,11 @@ services:
     ports:
         - 15672:15672
     volumes:
-      - ./rabbitmq/data/:/var/lib/rabbitmq/
-      - ./rabbitmq/log/:/var/log/rabbitmq
+      - ${HOME}/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ${HOME}/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
         - app-network
+        
 
   server_b:
     build:
