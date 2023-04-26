@@ -4,11 +4,13 @@ const amqp = require('amqplib');
 const OrderQueue = "orderQueue";
 const StatusQueue = "statusQueue";
 const rabbitHost = 'guest:guest@rabbitmq:5672';
+let rabbitConnection;
+let rabbitChannel;
 
 async function main() {
     // connect to RabbitMQ server
-    const connection = await amqp.connect('amqp://'+ rabbitHost);
-    const channel = await connection.createChannel();
+    rabbitConnection = await amqp.connect('amqp://'+ rabbitHost);
+    rabbitChannel = await connection.createChannel();
     console.log('handler connected to rabbit');
     // declare input and output queues
     await channel.assertQueue(OrderQueue, { durable: false });
