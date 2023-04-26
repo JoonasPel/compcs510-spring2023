@@ -13,7 +13,7 @@ let rabbitChannel, rabbitConnection;
 // Nodejs server configs
 const app = express();
 app.use(cors({
-  origin: "http://tie-webarc-38.it.tuni.fi:3000",
+  origin: ["http://localhost:3000", "http://tie-webarc-38.it.tuni.fi:3000"],
   methods: ["GET", "POST", "DELETE"],
 }));
 app.use(express.json());
