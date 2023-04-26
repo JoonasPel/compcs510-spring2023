@@ -6,8 +6,8 @@ services:
     ports:
         - 15672:15672
     volumes:
-      - ${HOME}/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ${HOME}/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - ${HOME}/.docker-conf/rabbitmq/data/:/${HOME}/data/rabbitmq/
+      - ${HOME}/.docker-conf/rabbitmq/log/:/${HOME}/logs/rabbitmq/
     networks:
         - app-network
         
@@ -20,7 +20,7 @@ services:
       - app-network
     depends_on:
       - "rabbitmq"
-    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_b.js'
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=60 -- node server_b.js'
 
   server_a:
     build:
@@ -32,7 +32,7 @@ services:
       - app-network
     depends_on:
       - "server_b"
-    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_a.js'
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=60 -- node server_a.js'
     environment:
       CREATE_SANDWICH_API_KEY: sub30
   # postgres database used to store orders, users, sandwiches. not persistent after restart
