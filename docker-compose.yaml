@@ -6,8 +6,8 @@ services:
     ports:
         - 15672:15672
     volumes:
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/var/log/rabbitmq
     networks:
         - app-network
 
@@ -34,7 +34,7 @@ services:
     command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- node server_a.js'
     environment:
       CREATE_SANDWICH_API_KEY: sub30
-
+  # postgres database used to store orders, users, sandwiches. not persistent after restart
   db:
     image: postgres:15
     container_name: 'db'
@@ -47,6 +47,7 @@ services:
       - 5432:5432
     networks:
       - app-network
+  # db monitor system. can be used from browser
   adminer:
     image: adminer:4.8.1
     container_name: 'adminer'
