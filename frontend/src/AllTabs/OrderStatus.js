@@ -40,13 +40,13 @@ function OrderStatus(props) {
       {!isLoading && allReady && orderedSandwiches.length > 0 && (
         <>
           <label>Your order is ready for delivery.</label>
-          <img src={delivery} height={100} width={150} />
+          <img alt='' src={delivery} height={100} width={150} />
         </>
       )}
       {!isLoading && orderedSandwiches.length > 0 && !allReady && (
         <>
           <label>Food is being prepared.</label>
-          <img src={logo} height={100} width={100} />
+          <img alt='' src={logo} height={100} width={100} />
         </>
       )}
       {orderedSandwiches.length === 0 && (

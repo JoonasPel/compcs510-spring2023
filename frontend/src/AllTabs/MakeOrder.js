@@ -9,10 +9,40 @@ function MakeOrder(props) {
   const isAdmin = props.isAdmin;
   const orderedSandwiches = props.orderedSandwiches;
   const setOrderedSandwiches = props.setOrderedSandwiches;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [sandwiches, setSandwiches] = useState([]);
+
+  
+  const fetchSandwiches = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/sandwich');
+      if (response.ok) {
+        const data = await response.json();
+
+        const formattedData = data.map((sandwich) => {
+          const toppingsArray = sandwich.toppings.map((topping) => {
+            return topping.name;
+          });
+          return {
+            sandwich_id: sandwich.sandwich_id,
+            sandwich_name: sandwich.sandwich_name,
+            bread_type: sandwich.bread_type,
+            toppings: toppingsArray
+          };
+        });
+        setSandwiches(formattedData);
+      } else {
+        console.error('Error:', response);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  
+  // Get all possible sandwiches from server
+  useEffect(() => {
+    fetchSandwiches();
+  }, []);
 
   const deleteSandwich = async (str) => {
     const apiKey = window.prompt('Enter API key:');
@@ -23,25 +53,20 @@ function MakeOrder(props) {
     const data = { apiKey };
     console.log(apiKey);
     try {
-      setLoading(true);
-      setError(null);
-      setSuccess(false);
       const response = await fetch(`http://localhost:3001/sandwich/${str}`, {
         method: 'DELETE',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      setLoading(false);
       if (response.ok) {
         console.log('sandwich deleted');
+        fetchSandwiches();
       } else {
-        setError('Failed to delete sandwich');
         console.error('Error:', response);
       }
     } catch (error) {
-      setLoading(false);
-      setError('Failed to send order.');
+
       console.error('Error:', error);
     }
   };
@@ -49,66 +74,22 @@ function MakeOrder(props) {
   // Sending sandwich order to server
   const sendOrder = async (str) => {
     try {
-      setLoading(true);
-      setError(null);
-      setSuccess(false);
       const response = await fetch('http://localhost:3001/order', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(str),
         headers: { 'Content-Type': 'application/json' }
       });
-      setLoading(false);
       if (response.ok) {
-        setSuccess(true);
         const data = await response.json();
         setOrderedSandwiches([...orderedSandwiches, data.id]);
       } else {
-        setError('Failed to send order.');
         console.error('Error:', response);
       }
     } catch (error) {
-      setLoading(false);
-      setError('Failed to send order.');
       console.error('Error:', error);
     }
   };
-
-  // Get all possible sandwiches from server
-  useEffect(() => {
-    const fetchSandwiches = async () => {
-        try {
-          setLoading(true);
-          setError(null);
-          const response = await fetch('http://localhost:3001/sandwich');
-          setLoading(false);
-          if (response.ok) {
-            const data = await response.json();
-
-            const formattedData = data.map((sandwich) => {
-              const toppingsArray = sandwich.toppings.map((topping) => {
-                return topping.name;
-              });
-              return {
-                sandwich_id: sandwich.sandwich_id,
-                sandwich_name: sandwich.sandwich_name,
-                bread_type: sandwich.bread_type,
-                toppings: toppingsArray
-              };
-            });
-            setSandwiches(formattedData);
-          } else {
-            setError('Failed to fetch sandwiches.');
-            console.error('Error:', response);
-          }
-        } catch (error) {
-          setLoading(false);
-          setError('Failed to fetch sandwiches.');
-          console.error('Error:', error);
-        }
-      };
-    fetchSandwiches();
-  }, []);
 
   return (
     <div className='background'>
