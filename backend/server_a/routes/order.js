@@ -5,8 +5,6 @@ const db = require("../db");
 // handle adding order
 function handleAddOrderRequest(req, res, rabbitChannel) {
   const sandwichId = Number(req.body.sandwichId);
-  // check that sandwichId is a number. TODO: also check that this exact
-  // sandwichId exists in available sandwiches in some database.
   if (isNaN(sandwichId)) {
     res.status(400);
     res.send();

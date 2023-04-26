@@ -1,7 +1,3 @@
 # RabbitMQ
 
-This directory is for the code and documentation of the _RabbitMQ_.
-
-Unlike with the Node servers, getting started with RabbitMQ doesn't require a Dockerfile and building an image, but you can use the RabbitMQ images from Docker Hub, and use them in the docker-compose.yml.
-
-When your project progresses, you can add a Dockerfile and other needed files, if you need them.
+We have two queues in RabbitMQ, one for orders and one for statuses. Orders are pushed to order queue and they are consumed from server_b one by one. Meaning orders will be processed(cooked) one at a time and then pushed to status queue. 

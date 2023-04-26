@@ -41,7 +41,7 @@ function User(props) {
   const deleteUser = async () => {
     const confirmed = window.confirm('Are you sure you want to delete this account?');
     if (confirmed) {
-      const response = await fetch(`http://tie-webarc-38.it.tuni.fi:3001/${username}`, {
+      const response = await fetch(`http://tie-webarc-38.it.tuni.fi:3001/user/${username}`, {
         method: 'DELETE',
         mode: 'cors',
         headers: {
@@ -64,7 +64,7 @@ function User(props) {
       setErrorMessage('Please enter a username and password');
       return;
     }
-    const response = await fetch('http://tie-webarc-38.it.tuni.fi:3001/login', {
+    const response = await fetch('http://tie-webarc-38.it.tuni.fi:3001/user/login', {
       method: 'POST',
       mode: 'cors',
       headers: {

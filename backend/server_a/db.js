@@ -143,15 +143,6 @@ async function checkUserCredentials(user) {
 };
 
 async function createSandwich(params) {
-  /* example data
-    {
-      name: "bmt",
-      toppings: { kinkku, juusto, salaatti},
-      breadType: hunajakaura,
-      apiKey:
-    }
-  */
-
   // Parse data for the new bread
   const bread = params;
   const breadName = bread.name;
