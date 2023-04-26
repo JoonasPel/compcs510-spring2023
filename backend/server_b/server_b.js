@@ -1,6 +1,4 @@
 const amqp = require('amqplib');
-const receiveTask = require('./rabbit-utils/receiveTask');
-const sendTask = require('./rabbit-utils/sendTask');
 
 // Rabbit
 const OrderQueue = "orderQueue";
