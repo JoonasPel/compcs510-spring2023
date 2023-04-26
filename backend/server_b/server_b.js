@@ -35,4 +35,13 @@ async function main() {
     }, { noAck: false });
 }
 
+// catch ctrl + c or container closing
+process.on("SIGINT", () => closeGracefully());
+process.on("SIGTERM", () => closeGracefully());
+// close rabbit connection and server_a gracefully
+function closeGracefully() {
+  rabbitChannel.close();
+  rabbitConnection.close();
+};
+
 main().catch(console.error);
