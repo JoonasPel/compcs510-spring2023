@@ -1,5 +1,7 @@
 # Server A
 
-This directory is for the code and documentation of the _server A_. A starter Dockerfile has been added, it has some comments to get you started.
+On app startup server_a.js creates a connection/channel to RabbitMQ and calls db.js to initialize Postgres database tables(orders, users, sandwiches). Then starts to listen for requests from frontend and at the same time consumes statusQueue from RabbitMQ. Orders received from frontend are saved to DB and also sent to the orderQueue in RabbitMQ for server_b to "prepare them".
 
-For communicating with RabbitMQ, there are many possible approaches. In the `rabbit-utils`-directory, in _receiveTask.js_ and _sendTask.js_ files, you can see simple examples of code that can be integrated into Swagger server stub's `Order`-controller. These have been directly copied from RabbitMQ examples and can be improved a lot for this system.
+There are three different routes available for handling frontend requests that are orders, users and sandwiches. Server_a forwards the request to the correct route file, e.g. "/user/login" goes to user.js. Route files handle the request and use functions from db.js to access PostGre database when needed.
+
+ready/prepared orders received from statusQueue(sent from server_b) are modified to DB.
