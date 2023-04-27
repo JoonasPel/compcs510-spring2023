@@ -10,15 +10,15 @@ let rabbitChannel;
 async function main() {
     // connect to RabbitMQ server
     rabbitConnection = await amqp.connect('amqp://'+ rabbitHost);
-    rabbitChannel = await connection.createChannel();
+    rabbitChannel = await rabbitConnection.createChannel();
     console.log('handler connected to rabbit');
     // declare input and output queues
-    await channel.assertQueue(OrderQueue, { durable: false });
-    await channel.assertQueue(StatusQueue, { durable: false });
-    channel.prefetch(1);
+    await rabbitChannel.assertQueue(OrderQueue, { durable: false });
+    await rabbitChannel.assertQueue(StatusQueue, { durable: false });
+    rabbitChannel.prefetch(1);
 
     // Consume messages from order queue and publish to status queue
-    channel.consume(OrderQueue, function (msg) {
+    rabbitChannel.consume(OrderQueue, function (msg) {
         const message = msg.content.toString();
         console.log(`Received message: ${message}`);
 
@@ -28,9 +28,9 @@ async function main() {
             obj.status = 'ready';
             console.log('Status set to ready');
             var msgToStatusQueue = JSON.stringify(obj);
-            channel.sendToQueue(StatusQueue, Buffer.from(msgToStatusQueue));
+            rabbitChannel.sendToQueue(StatusQueue, Buffer.from(msgToStatusQueue));
             console.log('Sent message: ' + msgToStatusQueue);
-            channel.ack(msg);
+            rabbitChannel.ack(msg);
         }, 7000);
     }, { noAck: false });
 }
